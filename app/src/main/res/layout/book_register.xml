@@ -203,8 +203,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="190dp"
-        android:text="回上頁"
+        android:text="回首頁"
         app:layout_constraintEnd_toStartOf="@+id/button2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextText8" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
