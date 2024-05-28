@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="navigation_drawer_open">打開導航抽屜</string>
+    <string name="navigation_drawer_close">關閉導航抽屜</string>
+</resources>
