@@ -39,9 +39,9 @@ public class Book_listAdapter extends BaseAdapter {
         if(view == null){
             view = LayoutInflater.from(context).inflate(R.layout.book_list,viewGroup,false);
         }
-        ImageView imBook = view.findViewById(R.id.book_image);
-        TextView tvBook_name = view.findViewById(R.id.book_name);
-        TextView tvAuthor = view.findViewById(R.id.author);
+        ImageView imBook = view.findViewById(R.id.review_imge);
+        TextView tvBook_name = view.findViewById(R.id.tv_review_name);
+        TextView tvAuthor = view.findViewById(R.id.tv_review_content);
         ImageView score = view.findViewById(R.id.score);
         Book book = lsBooks.get(index);
         imBook.setImageResource(book.getBookImageId());

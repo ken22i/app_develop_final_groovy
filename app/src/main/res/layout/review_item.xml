@@ -7,51 +7,53 @@
     android:layout_height="wrap_content"
     android:background="#00FFFFFF">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/review_imge"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:background="#00F5F5F5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/round_style"
+        app:strokeColor="@android:color/black"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tv_review_name"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:text="書名"
-        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="user_name"
+        android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/review_imge"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_review_content"
-        android:layout_width="75dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="250dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:text="作者"
+        android:text="content"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/review_imge"
-        app:layout_constraintTop_toBottomOf="@+id/tv_review_name" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_review_name"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/score"
         android:layout_width="140dp"
         android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_review_name"
         app:srcCompat="@android:drawable/bottom_bar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

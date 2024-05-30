@@ -18,7 +18,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.Firebase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,12 +89,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         };
         handler.postDelayed(runnable, 3000); // 開始輪播
 
+
+        //創建review列表
+        List<Review> reviews1 = new ArrayList<>();
+        reviews1.add(new Review("Steven","Great book!",R.drawable.person1,3));
+        reviews1.add(new Review("jom","Very informative.",R.drawable.person2,4));
+        List<Review> reviews2 = new ArrayList<>();
+        reviews2.add(new Review("Ken","Excellent resource",R.drawable.person3,5));
+        reviews2.add(new Review("toby","Highly recommended.",R.drawable.person2,1));
+        List<Review> reviews3 = new ArrayList<>();
+        reviews3.add(new Review("jully","A must-read for developers.",R.drawable.person5,2));
+        reviews3.add(new Review("JJ","Interesting insights.",R.drawable.person4,4));
+        List<Review> reviews4 = new ArrayList<>();
+        reviews4.add(new Review("OWO","A must-read for developers.",R.drawable.person1,2));
+        reviews4.add(new Review("JJ","Interesting insights.",R.drawable.person4,5));
+        List<Review> reviews5 = new ArrayList<>();
+        reviews5.add(new Review("qq","Excellent resource",R.drawable.person1,5));
+        reviews5.add(new Review("jonny","Highly recommended.",R.drawable.person2,1));
+
         //書籍列表
-        Book book1 = new Book(R.drawable.book1,"WordPress網站架設實務",452,4,"何敏煌");
-        Book book2 = new Book(R.drawable.book2,"R資料科學 (第2版)",387,5,"Hadley Wickham");
-        Book book3 = new Book(R.drawable.book3,"用ChatGPT詠唱來點亮React&前端技能樹",3879,3,"一宵三筵 (黃韻儒)");
-        Book book4 = new Book(R.drawable.book4,"人工智能的第一性原理: 熵與訊息引擎",39,2,"周輝龍");
-        Book book5 = new Book(R.drawable.book5,"新一代Keras 3.x重磅回歸: 跨TensorFlow與PyTorch建構Transformer、CNN、RNN、LSTM深度學習模型",87,1,"陳會安");
+        Book book1 = new Book(R.drawable.book1,"WordPress網站架設實務",452,1,"何敏煌",reviews1);
+        book1.calculateScore();
+        Book book2 = new Book(R.drawable.book2,"R資料科學 (第2版)",387,1,"Hadley Wickham",reviews2);
+        book2.calculateScore();
+        Book book3 = new Book(R.drawable.book3,"用ChatGPT詠唱來點亮React&前端技能樹",3879,1,"一宵三筵 (黃韻儒)",reviews3);
+        book3.calculateScore();
+        Book book4 = new Book(R.drawable.book4,"人工智能的第一性原理: 熵與訊息引擎",39,1,"周輝龍",reviews4);
+        book4.calculateScore();
+        Book book5 = new Book(R.drawable.book5,"新一代Keras 3.x重磅回歸: 跨TensorFlow與PyTorch建構Transformer、CNN、RNN、LSTM深度學習模型",87,1,"陳會安",reviews5);
+        book5.calculateScore();
         List<Book> books = new ArrayList<>();
         books.add(book1);
         books.add(book2);
@@ -108,11 +130,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 Toast.makeText(MainActivity.this, "item被選中" + id, Toast.LENGTH_SHORT).show();
+                Book selectedBook = books.get(position);
+
+                Intent intent = new Intent(MainActivity.this, Book_detail_Activity.class);
+                intent.putExtra("bookImage", selectedBook.getBookImageId());
+                intent.putExtra("bookTitle", selectedBook.getName());
+                intent.putExtra("ratingStars", selectedBook.getScore());
+                intent.putExtra("Author", selectedBook.getAuthor());
+                intent.putExtra("bookReviews", new ArrayList<>(selectedBook.getReviews()));
+
+                startActivity(intent);
             }
         };
         lvBooks.setOnItemClickListener(itemClickListener);
-        //hello
+
 
 
     }
@@ -132,11 +165,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(MainActivity.this, "書籍選項被選中", Toast.LENGTH_SHORT).show();
         } else if (itemId == R.id.nav_settings) {
             Toast.makeText(MainActivity.this, "設置選項被選中", Toast.LENGTH_SHORT).show();
-        } else if(itemId == R.id.nav_book_register)
-        {
-            Intent intent = new Intent();
-            intent.setClass(MainActivity.this, book_register.class);
-            startActivity(intent);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
