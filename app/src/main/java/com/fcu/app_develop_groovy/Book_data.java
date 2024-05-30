@@ -14,39 +14,31 @@ import java.util.List;
 public class Book_data {
     SQLiteDatabase database;
 
-    public void setDatabase(SQLiteDatabase.CursorFactory mode) {
-        database = SQLiteDatabase.openOrCreateDatabase("bookdata.db",mode,null);
-        String table = "CREATE TABLE book(_id PRIMARY KEY,bookname TEXT,author TEXT,isbn INTEGER,publishing TEXT,money INTEGER,category TEXT)";
-        database.execSQL(table);
+    public Book_data(SQLiteDatabase bookData) {
     }
+//"CREATE TABLE IF NOT EXISTS book(_id INTEGER PRIMARY KEY,bookname TEXT,author TEXT,isbn INTEGER,publishing TEXT,money INTEGER,category TEXT)"
     public void addDatabase(String bookname,String authorname,String isbn,String pulishingname,int money,String category_str){
-        String add = "INSERT INTO book(bookname,author,isbn,publishing,money,category) values ('" + bookname + "','" + authorname + "'," + isbn + ",'" +
+        String add = "INSERT INTO book(bookname,author,isbn,publishing,money,category) VALUES ('" + bookname + "','" + authorname + "'," + isbn + ",'" +
                 pulishingname + "'," + money + ",'" + category_str + "')";
-        ContentValues cv = new ContentValues();
-        cv.put("bookname",bookname);
-        cv.put("author",authorname);
-        cv.put("isbn",isbn);
-        cv.put("publishing",pulishingname);
-        cv.put("money",money);
-        cv.put("category",category_str);
-        database.insert("table",null,cv);
+        database.execSQL(add);
     }
-    public List<Book> searchDatabase(String bookname, String authorname, String isbn, String pulishingname, int money, String category_str)
+    public Cursor searchDatabase(String bookname, String authorname, String isbn, String pulishingname, int money, String category_str)
     {
         String search = "";
 
         if (bookname.equals("") != true)
             search += "bookname="+bookname;
         if(authorname.equals("") != true)
-            search += "author="+authorname;
+            search += search.length() == 0 ? "author="+authorname : ",author="+authorname;
         if(isbn.equals("") != true)
-            search += "isbn=" + isbn;
+            search += search.length() == 0 ? "isbn="+isbn : ",isbn="+isbn;
         if(pulishingname.equals("") != true)
-            search += "publishing=" + pulishingname;
+            search += search.length() == 0 ? "publishing="+pulishingname : ",publishing="+pulishingname;
         if(money != 0)
-            search += "money=" + money;
+            search += search.length() == 0 ? "money="+money : ",money="+money;
         if(category_str.equals("") != true)
-            search += "category=" + category_str;
-        Cursor table = database.query("table",null,search,null,null,null,null,null);//要寫資料庫的search最後的return
+            search += search.length() == 0 ? "category="+category_str : ",category="+category_str;
+        Cursor cursor = database.query("table",null,search,null,null,null,null,null);//要寫資料庫的search最後的return
+        return cursor;
     }
 }

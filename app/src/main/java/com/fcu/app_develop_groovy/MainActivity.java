@@ -1,5 +1,6 @@
 package com.fcu.app_develop_groovy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MenuItem;
@@ -131,6 +132,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(MainActivity.this, "書籍選項被選中", Toast.LENGTH_SHORT).show();
         } else if (itemId == R.id.nav_settings) {
             Toast.makeText(MainActivity.this, "設置選項被選中", Toast.LENGTH_SHORT).show();
+        } else if(itemId == R.id.nav_book_register)
+        {
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, book_register.class);
+            startActivity(intent);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
