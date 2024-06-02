@@ -13,12 +13,28 @@ import java.util.List;
 
 public class Book_data {
     SQLiteDatabase database;
-
-    public Book_data(SQLiteDatabase bookData) {
+    static Book_data instance;
+    private static synchronized Book_data getInstance()
+    {
+        if(instance == null)
+            instance = new Book_data();
+        return instance;
     }
+
+    public static void setInstance(Book_data instance) {
+        Book_data.instance = instance;
+    }
+
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS book(_id INTEGER PRIMARY KEY,bookname TEXT,author TEXT,isbn INTEGER,publishing TEXT,money INTEGER,category TEXT)";
+
+
+    public void setDatabase(SQLiteDatabase database) {
+        this.database = database;
+    }
+
 //"CREATE TABLE IF NOT EXISTS book(_id INTEGER PRIMARY KEY,bookname TEXT,author TEXT,isbn INTEGER,publishing TEXT,money INTEGER,category TEXT)"
     public void addDatabase(String bookname,String authorname,String isbn,String pulishingname,int money,String category_str){
-        String add = "INSERT INTO book(bookname,author,isbn,publishing,money,category) VALUES ('" + bookname + "','" + authorname + "'," + isbn + ",'" +
+        String add = "INSERT INTO "+ "book" +" (bookname,author,isbn,publishing,money,category) VALUES ('" + bookname + "','" + authorname + "'," + isbn + ",'" +
                 pulishingname + "'," + money + ",'" + category_str + "')";
         database.execSQL(add);
     }

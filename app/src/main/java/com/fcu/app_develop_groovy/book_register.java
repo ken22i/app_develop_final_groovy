@@ -14,9 +14,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.lang.reflect.Constructor;
+
 public class book_register extends AppCompatActivity {
     EditText book_name,author,isbn,publishing,money,category,image;
     Button back,login;
+    public Book_data data;
     private static final String DATABASE_NAME = "bookdata";
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS book(_id INTEGER PRIMARY KEY,bookname TEXT,author TEXT,isbn INTEGER,publishing TEXT,money INTEGER,category TEXT)";
     @Override
@@ -29,6 +32,7 @@ public class book_register extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         book_name = findViewById(R.id.edit_bookname);
         author = findViewById(R.id.edit_author);
         isbn = findViewById(R.id.edit_isbn);
@@ -38,10 +42,17 @@ public class book_register extends AppCompatActivity {
         image = findViewById(R.id.edit_image);
         back = findViewById(R.id.btn_back_register);
         login = findViewById(R.id.btn_login);
-
+        book_name.setText("計算機演算法");
+        author.setText("陳錫民");
+        isbn.setText("123456789123456");
+        publishing.setText("逢甲大學");
+        money.setText("1000");
+        category.setText("教育");
+        image.setText("12.jpg");
         SQLiteDatabase book_data = openOrCreateDatabase(DATABASE_NAME,MODE_PRIVATE,null);
         book_data.execSQL(CREATE_TABLE);
-        Book_data data = new Book_data(book_data);
+        data = new Book_data();
+        data.setDatabase(book_data);
         View.OnClickListener button_booklogin = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,9 +63,6 @@ public class book_register extends AppCompatActivity {
                         isbncode = isbn.getText().toString();
                 int bookmoney = Integer.valueOf(money.getText().toString());
                 data.addDatabase(bookname,authorname,isbncode,pulishingname,bookmoney,category_str);
-                String add = "INSERT INTO book(bookname,author,isbn,publishing,money,category) values ('" + bookname + "','" + authorname + "'," + isbn.toString() + ",'" +
-                        pulishingname + "'," + money.toString() + ",'" + category_str + "')";
-                book_data.execSQL(add);
                 Toast.makeText(book_register.this, "書籍登入成功1", Toast.LENGTH_SHORT).show();
             }
         };
