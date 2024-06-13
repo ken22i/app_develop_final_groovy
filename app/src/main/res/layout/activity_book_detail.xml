@@ -72,6 +72,13 @@
                 android:textStyle="bold" />
 
             <!-- 評價列表 -->
+
+            <Button
+                android:id="@+id/btn_review_submit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="撰寫你的第一條評論" />
+
             <ListView
                 android:id="@+id/review_list"
                 android:layout_width="match_parent"

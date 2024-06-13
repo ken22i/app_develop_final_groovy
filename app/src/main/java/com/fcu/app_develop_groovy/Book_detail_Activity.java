@@ -1,12 +1,17 @@
 package com.fcu.app_develop_groovy;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +23,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Book_detail_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +35,10 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
     private ImageView ratingStars;
     private ListView reviewList;
     private Button btnOpenMenu;
+    private Button btnSubmitReview;
+    private List<Review> bookReviews;
+    private ReviewListAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +50,9 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
         reviewList = findViewById(R.id.review_list);
         bookAuthor = findViewById(R.id.tv_author);
         btnOpenMenu = findViewById(R.id.btn_borrow);
+        btnSubmitReview = findViewById(R.id.btn_review_submit);
 
-        //側拉選單初始化
+        // 側拉選單初始化
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -69,7 +80,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
             String title = intent.getStringExtra("bookTitle");
             int ratingResId = intent.getIntExtra("ratingStars", -1);
             String authorName = intent.getStringExtra("Author");
-            List<Review> bookReviews = (List<Review>) getIntent().getSerializableExtra("bookReviews");
+            bookReviews = (List<Review>) getIntent().getSerializableExtra("bookReviews");
 
             if (imageResId != -1) {
                 bookImage.setImageResource(imageResId);
@@ -78,7 +89,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
                 bookTitle.setText(title);
             }
             if (ratingResId != -1) {
-                switch (ratingResId){
+                switch (ratingResId) {
                     case 1:
                         ratingStars.setImageResource(R.drawable.star1);
                         break;
@@ -95,25 +106,66 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
                         ratingStars.setImageResource(R.drawable.star5);
                         break;
                 }
-
             }
-            if(authorName != null){
+            if (authorName != null) {
                 bookAuthor.setText(authorName);
             }
 
-            ReviewListAdapter adapter = new ReviewListAdapter(this, bookReviews);
+            adapter = new ReviewListAdapter(this, bookReviews);
             reviewList.setAdapter(adapter);
-
-            // 這裡可以設置評價列表的資料
         }
 
+        // 設置提交評論按鈕的點擊事件
+        btnSubmitReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showReviewDialog();
+            }
+        });
+    }
+
+    private void showReviewDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_review, null);
+        builder.setView(dialogView);
+
+
+        final EditText etReviewContent = dialogView.findViewById(R.id.etReviewContent);
+        final RatingBar ratingBar = dialogView.findViewById(R.id.ratingBar);
+
+        builder.setTitle("提交評論")
+                .setPositiveButton("提交", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String reviewContent = etReviewContent.getText().toString();
+                        int reviewScore = (int) ratingBar.getRating();
+
+                        if (!reviewContent.isEmpty() && reviewScore > 0) {
+                            Review newReview = new Review("testUser", reviewContent, R.drawable.person3, reviewScore);
+                            bookReviews.add(newReview);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(Book_detail_Activity.this, "請填寫完整的評論信息和星級評分", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.nav_home){
+        if (itemId == R.id.nav_home) {
             Toast.makeText(Book_detail_Activity.this, "首頁選項被選中", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Book_detail_Activity.this, MainActivity.class);
+            startActivity(intent);
         } else if (itemId == R.id.nav_books) {
             Toast.makeText(Book_detail_Activity.this, "書籍選項被選中", Toast.LENGTH_SHORT).show();
         } else if (itemId == R.id.nav_settings) {
