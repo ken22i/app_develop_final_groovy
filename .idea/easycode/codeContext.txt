@@ -2,114 +2,165 @@
 
 
 
-<file file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_detail_Activity.java>
+<file file_path=/app/src/main/java/com/fcu/app_develop_groovy/ReviewListAdapter.java>
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
+                review_score_image.setImageResource(R.drawable.star4);
+                break;
+            case 5:
+                review_score_image.setImageResource(R.drawable.star5);
+                break;
+        }
 
-import com.google.android.material.navigation.NavigationView;
+        return convertView;
+    }
+}
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Book_detail_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private DrawerLayout drawerLayout;
-    private ImageView bookImage;
-    private TextView bookTitle;
-    private TextView bookAuthor;
-    private ImageView ratingStars;
-    private ListView reviewList;
-    private Button btnOpenMenu;
-    private Button btnSubmitReview;
-    private List<Review> bookReviews;
-    private ReviewListAdapter adapter;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_detail);
-
-        bookImage = findViewById(R.id.review_imge);
-        bookTitle = findViewById(R.id.book_title);
-        ratingStars = findViewById(R.id.rating_stars);
-        reviewList = findViewById(R.id.review_list);
-        bookAuthor = findViewById(R.id.tv_author);
-        btnOpenMenu = findViewById(R.id.btn_borrow);
-        btnSubmitReview = findViewById(R.id.btn_review_submit);
-
-        // 側拉選單初始化
-        drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setItemIconTintList(null);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        btnOpenMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-            }
-        });
-
-        // 接收書籍資料
-        Intent intent = getIntent();
-        if (intent != null) {
-            int imageResId = intent.getIntExtra("bookImage", -1);
-            String title = intent.getStringExtra("bookTitle");
-            int ratingResId = intent.getIntExtra("ratingStars", -1);
-            String authorName = intent.getStringExtra("Author");
-            bookReviews = (List<Review>) getIntent().getSerializableExtra("bookReviews");
-
-            if (imageResId != -1) {
-                bookImage.setImageResource(imageResId);
-            }
-            if (title != null) {
-                bookTitle.setText(title);
-            }
-            if (ratingResId != -1) {
-                switch (ratingResId) {
-                    case 1:
-                        ratingStars.setImageResource(R.drawable.star1);
-                        break;
-                    case 2:
-                        ratingStars.setImageResource(R.drawable.star2);
-                        break;
-                    case 3:
-                        ratingStars.setImageResource(R.drawable.star3);
-                        break;
-                    case 4:
-                        ratingStars.setImageResource(R.drawable.star4);
-                        break;
-                    c
 </file>
 
 
 
-<file file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_listAdapter.java>
+<file file_path=/app/src/main/res/xml/backup_rules.xml>
+<?xml version="1.0" encoding="utf-8"?><!--
+   Sample backup rules file; uncomment and customize as necessary.
+   See https://developer.android.com/guide/topics/data/autobackup
+   for details.
+   Note: This file is ignored for devices older that API 31
+   See https://developer.android.com/about/versions/12/backup-restore
+-->
+<full-backup-content>
+    <!--
+   <include domain="sharedpref" path="."/>
+   <exclude domain="sharedpref" path="device.xml"/>
+-->
+</full-backup-content>
+</file>
 
-                break;
-            case 4:
-                score.setImageResource(R.drawable.star4);
-                break;
-            case 5:
-                score.setImageResource(R.drawable.star5);
-                break;
-        }
 
 
-        return view;
+<file file_path=/app/src/main/java/com/fcu/app_develop_groovy/book_search.java>
+
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class book_search extends AppCompatActivity {
+    EditText search_bookname,search_author,search_isbn,search_category;
+    Button btn_search,btn_search_back;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.book_search_layout);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        search_bookname = findViewById(R.id.search_book_name);
+        search_author = findViewById(R.id.search_author);
+        search_isbn = findViewById(R.id.search_isbn);
+        search_category = findViewById(R.id.search_category);
+        btn_search = findViewById(R.id.btn_search);
+        btn_search_back = findViewById(R.id.btn_search_back);
+        Book_data data = new Book_data();
+        View.OnClickListener search_data = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        };
+        View.OnClickListener back = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent change = new Intent();
+                change.setClass(book_search.this, MainActivity.class);
+                book_search.this.startActivity(change);
+                Toast.makeText(book_search.this, "回首頁", Toast.LENGTH_SHORT).show();
+            }
+        };
+        btn_search.setOnClickListener(search_data);
+    
+</file>
+
+
+
+<file file_path=/app/src/main/java/com/fcu/app_develop_groovy/account_management.java>
+
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class account_management extends AppCompatActivity {
+    EditText studient_id_input;
+    Button back,search;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.account_management_layout);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        studient_id_input = findViewById(R.id.edit_account);
+        back = findViewById(R.id.btn_management_back);
+        search = findViewById(R.id.btn_search);
+        View.OnClickListener backtofirst = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent change = new Intent();
+                change.setClass(account_management.this, MainActivity.class);
+                account_management.this.startActivity(change);
+            }
+        };
+        back.setOnClickListener(backtofirst);
     }
 }
+</file>
 
+
+
+<file file_path=/app/src/main/res/layout/book_register_layout.xml>
+
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <EditText
+        android:id="@+id/edit_publishing"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="ISBN"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_author" />
+
+    <EditText
+        android:id="@+id/edit_bookname"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
 </file>
 
 

@@ -22,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -193,6 +194,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Book book = snapshot.getValue(Book.class);
                     if (book != null) {
+                        GenericTypeIndicator<List<Review>> t = new GenericTypeIndicator<List<Review>>() {};
+                        List<Review> reviews = snapshot.child("reviews").getValue(t);
                         book.calculateScore(); // 計算書籍的評分
                         books.add(book);
                     }

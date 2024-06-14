@@ -87,6 +87,7 @@ public class book_register extends AppCompatActivity {
     private void addBook(String bookname,String author){
         List<Review> reviews1 = new ArrayList<>();
         reviews1.add(new Review("Steven","Great book!",R.drawable.person1,3));
+
         Book book = new Book(R.drawable.book1,bookname,0,0,author,reviews1);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("books");

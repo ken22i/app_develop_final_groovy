@@ -22,6 +22,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +43,11 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
     private Button btnSubmitReview;
     private List<Review> bookReviews;
     private ReviewListAdapter adapter;
-
+    private DatabaseReference databaseReference;
+    private String title; // 書籍標題
+    private String authorName; // 書籍作者
+    private int imageResId; // 書籍圖片資源ID
+    private int ratingResId; // 評價星數資源ID
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +60,8 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
         bookAuthor = findViewById(R.id.tv_author);
         btnOpenMenu = findViewById(R.id.btn_borrow);
         btnSubmitReview = findViewById(R.id.btn_review_submit);
+        // 初始化 Firebase Database 引用
+        databaseReference = FirebaseDatabase.getInstance().getReference("books");
 
         // 側拉選單初始化
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -76,10 +87,10 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
         // 接收書籍資料
         Intent intent = getIntent();
         if (intent != null) {
-            int imageResId = intent.getIntExtra("bookImage", -1);
-            String title = intent.getStringExtra("bookTitle");
-            int ratingResId = intent.getIntExtra("ratingStars", -1);
-            String authorName = intent.getStringExtra("Author");
+            imageResId = intent.getIntExtra("bookImage", -1);
+            title = intent.getStringExtra("bookTitle");
+            ratingResId = intent.getIntExtra("ratingStars", -1);
+            authorName = intent.getStringExtra("Author");
             bookReviews = (List<Review>) getIntent().getSerializableExtra("bookReviews");
 
             if (imageResId != -1) {
@@ -145,6 +156,10 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
                             Review newReview = new Review("testUser", reviewContent, R.drawable.person3, reviewScore);
                             bookReviews.add(newReview);
                             adapter.notifyDataSetChanged();
+                            // 上傳評論到 Firebase
+                            // 刪除舊書籍記錄並上傳新的書籍記錄
+                            updateBookInFirebase();
+
                         } else {
                             Toast.makeText(Book_detail_Activity.this, "請填寫完整的評論信息和星級評分", Toast.LENGTH_SHORT).show();
                         }
@@ -157,6 +172,32 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
                 });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+    private void updateBookInFirebase() {
+        // 刪除舊書籍記錄
+        databaseReference.orderByChild("name").equalTo(title).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    snapshot.getRef().removeValue();
+                }
+                // 上傳新的書籍記錄
+                Book updatedBook = new Book(imageResId, title, 0, ratingResId, authorName, bookReviews);
+                databaseReference.push().setValue(updatedBook)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(Book_detail_Activity.this, "評論已成功提交並更新", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Book_detail_Activity.this, "評論提交失敗：" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(Book_detail_Activity.this, "操作失敗：" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
