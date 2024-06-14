@@ -18,6 +18,33 @@ public class Book {
         this.author = author;
         this.reviews = reviews;
     }
+    public Book(){
+
+    }
+
+    public void setBookImageId(int bookImageId) {
+        BookImageId = bookImageId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBorrowed(int borrowed) {
+        Borrowed = borrowed;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
 
     public List<Review> getReviews() {
         return reviews;

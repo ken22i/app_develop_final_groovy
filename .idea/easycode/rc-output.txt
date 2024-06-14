@@ -1,0 +1,1493 @@
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_data.java>
+package com.fcu.app_develop_groovy;
+
+
+import static android.content.Context.MODE_APPEND;
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.util.List;
+
+
+public class Book_data {
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_data.java>
+public class Book_data {
+    SQLiteDatabase database;
+    static Book_data instance;
+    private static synchronized Book_data getInstance()
+    {
+        if(instance == null)
+            instance = new Book_data();
+        return instance;
+    }
+
+    public static void setInstance(Book_data instance) {
+        Book_data.instance = instance;
+    }
+
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS book(_id INTEGER PRIMARY KEY,bookname TEXT,author TEXT,isbn INTEGER,publishing TEXT,money INTEGER,category TEXT)";
+
+
+    public void setDatabase(SQLiteDatabase database) {
+        this.database = database;
+    }
+
+//"CREATE TABLE IF NOT EXISTS book(_id INTEGER PRIMARY KEY,bookname TEXT,author TEXT,isbn INTEGER,publishing TEXT,money INTEGER,category TEXT)"
+    public void addDatabase(String bookname,String authorname,String isbn,String pulishingname,int money,String category_str){
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_data.java>
+    {
+        String search = "";
+
+        if (bookname.equals("") != true)
+            search += "bookname="+bookname;
+        if(authorname.equals("") != true)
+            search += search.length() == 0 ? "author="+authorname : ",author="+authorname;
+        if(isbn.equals("") != true)
+            search += search.length() == 0 ? "isbn="+isbn : ",isbn="+isbn;
+        if(pulishingname.equals("") != true)
+            search += search.length() == 0 ? "publishing="+pulishingname : ",publishing="+pulishingname;
+        if(money != 0)
+            search += search.length() == 0 ? "money="+money : ",money="+money;
+        if(category_str.equals("") != true)
+            search += search.length() == 0 ? "category="+category_str : ",category="+category_str;
+        Cursor cursor = database.query("table",null,search,null,null,null,null,null);//要寫資料庫的search最後的return
+        return cursor;
+    }
+}
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_listAdapter.java>
+    }
+}
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_detail_Activity.java>
+public class Book_detail_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private DrawerLayout drawerLayout;
+    private ImageView bookImage;
+    private TextView bookTitle;
+    private TextView bookAuthor;
+    private ImageView ratingStars;
+    private ListView reviewList;
+    private Button btnOpenMenu;
+    private Button btnSubmitReview;
+    private List<Review> bookReviews;
+    private ReviewListAdapter adapter;
+
+    @Override
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/book_search.java>
+public class book_search extends AppCompatActivity {
+    EditText search_bookname,search_author,search_isbn,search_category;
+    Button btn_search,btn_search_back;
+    @Override
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_listAdapter.java>
+public class Book_listAdapter extends BaseAdapter {
+    private Context context;
+    private List<Book> lsBooks;
+
+    public Book_listAdapter(Context context, List<Book> lsBooks) {
+        this.context = context;
+        this.lsBooks = lsBooks;
+    }
+
+    @Override
+    public int getCount() {
+        return lsBooks.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return lsBooks.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_detail_Activity.java>
+            int imageResId = intent.getIntExtra("bookImage", -1);
+            String title = intent.getStringExtra("bookTitle");
+            int ratingResId = intent.getIntExtra("ratingStars", -1);
+            String authorName = intent.getStringExtra("Author");
+            bookReviews = (List<Review>) getIntent().getSerializableExtra("bookReviews");
+
+            if (imageResId != -1) {
+                bookImage.setImageResource(imageResId);
+            }
+            if (title != null) {
+                bookTitle.setText(title);
+            }
+            if (ratingResId != -1) {
+                switch (ratingResId) {
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/book_search.java>
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.book_search_layout);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        search_bookname = findViewById(R.id.search_book_name);
+        search_author = findViewById(R.id.search_author);
+        search_isbn = findViewById(R.id.search_isbn);
+        search_category = findViewById(R.id.search_category);
+        btn_search = findViewById(R.id.btn_search);
+        btn_search_back = findViewById(R.id.btn_search_back);
+        Book_data data = new Book_data();
+        View.OnClickListener search_data = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        };
+        View.OnClickListener back = new View.OnClickListener() {
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_detail_Activity.java>
+package com.fcu.app_develop_groovy;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Book_detail_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/ReviewListAdapter.java>
+    }
+}
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_listAdapter.java>
+    @Override
+    public View getView(int index, View view, ViewGroup viewGroup) {
+        if(view == null){
+            view = LayoutInflater.from(context).inflate(R.layout.book_list,viewGroup,false);
+        }
+        ImageView imBook = view.findViewById(R.id.review_imge);
+        TextView tvBook_name = view.findViewById(R.id.tv_review_name);
+        TextView tvAuthor = view.findViewById(R.id.tv_review_content);
+        ImageView score = view.findViewById(R.id.score);
+        Book book = lsBooks.get(index);
+        imBook.setImageResource(book.getBookImageId());
+        tvBook_name.setText(book.getName());
+        tvAuthor.setText(book.getAuthor());
+        switch (book.getScore()){
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book.java>
+package com.fcu.app_develop_groovy;
+
+import java.util.List;
+
+public class Book {
+    private int BookImageId;
+    private String name;
+    private int Borrowed;
+    private int score;
+    private String author;
+    private List<Review> reviews;
+
+    public Book(int bookImageId, String name, int borrowed, int score, String author, List<Review> reviews) {
+        BookImageId = bookImageId;
+        this.name = name;
+        Borrowed = borrowed;
+        this.score = score;
+        this.author = author;
+        this.reviews = reviews;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public int getBookImageId() {
+        return BookImageId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getBorrowed() {
+        return Borrowed;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+    // 新增計算平均分數的方法
+    public void calculateScore() {
+
+</passage>
+<passage file_path=/app/src/main/res/layout/activity_main.xml>
+android:layout_height="150dp" />
+
+        <ListView
+            android:id="@+id/lvBooks"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#00FFFFFF"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp"
+            android:paddingTop="16dp">
+
+        </ListView>
+
+        <!-- 添加新書籍按鈕 -->
+
+    </LinearLayout>
+
+    <!-- 側拉選單 -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/nav_background"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/drawer_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/ReviewListAdapter.java>
+public class ReviewListAdapter extends BaseAdapter {
+    private Context context;
+    private List<Review> reviews;
+    public ReviewListAdapter(Context context, List<Review> reviews) {
+        this.context = context;
+        this.reviews = reviews;
+    }
+    @Override
+    public int getCount() {
+        return reviews.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return reviews.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+
+</passage>
+<passage file_path=/app/src/main/res/layout/book_list.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00FFFFFF">
+
+    <ImageView
+        android:id="@+id/review_imge"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tv_review_name"
+        android:layout_width="200dp"
+</passage>
+<passage file_path=/app/src/main/res/layout/activity_main.xml>
+android:layout_height="24dp"
+            android:src="@drawable/ic_search"
+            android:layout_gravity="center_vertical" />
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="輸入書名或作者"
+            android:padding="8dp"
+            android:background="@android:color/transparent"
+            android:textColor="@color/text_color"
+            android:textColorHint="@color/hint_color"
+            android:inputType="text" />
+
+        </LinearLayout>
+
+    <!-- 書籍列表 -->
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_news"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
+
+        <ListView
+            android:id="@+id/lvBooks"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/book_search.java>
+        View.OnClickListener back = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent change = new Intent();
+                change.setClass(book_search.this, MainActivity.class);
+                book_search.this.startActivity(change);
+                Toast.makeText(book_search.this, "回首頁", Toast.LENGTH_SHORT).show();
+            }
+        };
+        btn_search.setOnClickListener(search_data);
+        btn_search_back.setOnClickListener(back);
+    }
+}
+</passage>
+<passage file_path=/app/src/main/res/layout/book_list.xml>
+app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tv_review_name"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:text="書名"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/review_imge"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_review_content"
+        android:layout_width="75dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="作者"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/review_imge"
+        app:layout_constraintTop_toBottomOf="@+id/tv_review_name" />
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/ImageSliderAdapter.java>
+    @Override
+    public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
+        holder.imageView.setImageResource(imageList.get(position));
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = urlList.get(position);
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                context.startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return imageList.size();
+    }
+
+    public static class ImageViewHolder extends RecyclerView.ViewHolder {
+
+        ImageView imageView;
+
+        public ImageViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imageView = itemView.findViewById(R.id.banner_image);
+        }
+    }
+}
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/ReviewListAdapter.java>
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if(convertView == null){
+            convertView = LayoutInflater.from(context).inflate(R.layout.review_item,parent,false);
+        }
+        ImageView review_image = convertView.findViewById(R.id.review_imge);
+        TextView review_name = convertView.findViewById(R.id.tv_review_name);
+        TextView review_content = convertView.findViewById(R.id.tv_review_content);
+        ImageView review_score_image = convertView.findViewById(R.id.score);
+
+        Review review = reviews.get(position);
+        review_image.setImageResource(review.getReviewImage());
+        review_name.setText(review.getReviewerName());
+        review_content.setText(review.getReviewContent());
+        switch (review.getReview_score()){
+
+</passage>
+<passage file_path=/app/src/main/res/layout/activity_book_detail.xml>
+android:orientation="vertical">
+
+            <!-- 書籍圖片 -->
+            <ImageView
+                android:id="@+id/review_imge"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/book1" /> <!-- 替換成您的圖片資源 -->
+
+            <!-- 書名 -->
+            <TextView
+                android:id="@+id/book_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="書名"
+                android:textSize="24sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+
+            <!-- 評價星數圖片 -->
+            <TextView
+                android:id="@+id/tv_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/account_management.java>
+public class account_management extends AppCompatActivity {
+    EditText studient_id_input;
+    Button back,search;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/account_management.java>
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.account_management_layout);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        studient_id_input = findViewById(R.id.edit_account);
+        back = findViewById(R.id.btn_management_back);
+        search = findViewById(R.id.btn_search);
+        View.OnClickListener backtofirst = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent change = new Intent();
+                change.setClass(account_management.this, MainActivity.class);
+                account_management.this.startActivity(change);
+            }
+        };
+        back.setOnClickListener(backtofirst);
+    }
+
+</passage>
+<passage file_path=/app/src/main/res/layout/activity_book_detail.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background"
+    tools:context=".MainActivity">
+
+    <!-- 主內容 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:background="@drawable/background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 書籍圖片 -->
+            <ImageView
+                android:id="@+id/review_imge"
+                android:layout_width="match_parent"
+</passage>
+<passage file_path=/app/src/main/res/layout/activity_book_detail.xml>
+<TextView
+                android:id="@+id/tv_author"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="作者" />
+
+            <ImageView
+                android:id="@+id/rating_stars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/star1" /> <!-- 替換成您的評價星數圖片 -->
+
+            <!-- 預約借取按鈕 -->
+            <Button
+                android:id="@+id/btn_borrow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="預約借取" />
+
+            <!-- 評價列表標題 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="評價列表"
+</passage>
+<passage file_path=/app/src/main/res/layout/book_register_layout.xml>
+<TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="類別"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_money" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="出版社"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_isbn" />
+
+    <EditText
+        android:id="@+id/edit_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/ImageSliderAdapter.java>
+public class ImageSliderAdapter extends RecyclerView.Adapter<ImageSliderAdapter.ImageViewHolder> {
+
+    private List<Integer> imageList;
+    private List<String> urlList;
+    private Context context;
+    public ImageSliderAdapter(Context context, List<Integer> imageList, List<String> urlList) {
+        this.context = context;
+        this.imageList = imageList;
+        this.urlList = urlList;
+    }
+
+    @NonNull
+    @Override
+    public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_slider_item, parent, false);
+        return new ImageViewHolder(view);
+    }
+
+    @Override
+
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/ImageSliderAdapter.java>
+package com.fcu.app_develop_groovy;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
+public class ImageSliderAdapter extends RecyclerView.Adapter<ImageSliderAdapter.ImageViewHolder> {
+
+</passage>
+<passage file_path=/app/src/main/res/layout/activity_main.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background"
+    tools:context=".MainActivity">
+    <!-- 主內容 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <!-- 標題 -->
+
+        <Button
+            android:id="@+id/btn_open_menu"
+            android:layout_width="79dp"
+            android:layout_height="38dp"
+            android:text="更多" />
+
+        <!-- 搜尋欄 -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+</passage>
+<passage file_path=/app/src/main/res/layout/book_list.xml>
+app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/review_imge"
+        app:layout_constraintTop_toBottomOf="@+id/tv_review_name" />
+
+    <ImageView
+        android:id="@+id/score"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_review_name"
+        app:srcCompat="@android:drawable/bottom_bar" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Review.java>
+package com.fcu.app_develop_groovy;
+
+import java.io.Serializable;
+
+public class Review implements Serializable {
+    private String reviewerName;
+    private String reviewContent;
+    private int reviewImage;
+    private int review_score;
+
+    public Review(String reviewerName, String reviewContent, int reviewImage,int review_score) {
+        this.reviewerName = reviewerName;
+        this.reviewContent = reviewContent;
+        this.reviewImage = reviewImage;
+        this.review_score = review_score;
+    }
+
+    public void setReview_score(int review_score) {
+        this.review_score = review_score;
+    }
+
+    public int getReview_score() {
+        return review_score;
+    }
+
+    public String getReviewerName() {
+        return reviewerName;
+    }
+
+    public String getReviewContent() {
+        return reviewContent;
+    }
+
+    public int getReviewImage() {
+        return reviewImage;
+    }
+
+    public void setReviewerName(String reviewerName) {
+        this.reviewerName = reviewerName;
+    }
+
+    public void setReviewContent(String reviewContent) {
+
+</passage>
+<passage file_path=/app/src/main/res/layout/book_register_layout.xml>
+android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+    <EditText
+        android:id="@+id/edit_author"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <EditText
+        android:id="@+id/edit_publishing"
+</passage>
+<passage file_path=/app/src/main/res/layout/book_search_layout.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".book_search">
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="書籍名稱"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+    <EditText
+        android:id="@+id/search_book_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/account_management.java>
+package com.fcu.app_develop_groovy;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class account_management extends AppCompatActivity {
+
+</passage>
+<passage file_path=/app/src/main/res/layout/book_search_layout.xml>
+app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_isbn" />
+
+    <TextView
+        android:id="@+id/textView148"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="類別"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_publishing" />
+
+    <EditText
+        android:id="@+id/search_author"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book.java>
+    public void calculateScore() {
+        if (reviews != null && !reviews.isEmpty()) {
+            int sum = 0;
+            for (Review review : reviews) {
+                sum += review.getReview_score();
+            }
+            this.score = Math.round((float) sum / reviews.size());
+        } else {
+            this.score = 0; // 如果沒有reviews，設置score為0
+        }
+    }
+}
+
+
+</passage>
+<passage file_path=/app/src/main/res/layout/book_search_layout.xml>
+<EditText
+        android:id="@+id/search_book_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+    <TextView
+        android:id="@+id/textView125"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="作者"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_book_name" />
+
+    <TextView
+        android:id="@+id/textView14"
+</passage>
+<passage file_path=/app/src/main/res/layout/book_register_layout.xml>
+app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <EditText
+        android:id="@+id/edit_publishing"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="ISBN"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+</passage>
+<passage file_path=/app/src/main/res/menu/drawer_menu.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:checked="true"
+            android:icon="@drawable/ic_home"
+            android:title="首頁" />
+        <item
+            android:id="@+id/nav_books"
+            android:checked="true"
+            android:icon="@drawable/ic_books"
+            android:title="書籍" />
+    <item
+        android:id="@+id/nav_settings"
+        android:checked="true"
+        android:icon="@drawable/ic_settings"
+        android:title="設置" />
+        <item
+            android:id="@+id/nav_book_register"
+            android:checked="true"
+            android:title="書籍登入" />
+    </group>
+</menu>
+</passage>
+<passage file_path=/app/src/main/res/xml/data_extraction_rules.xml>
+<?xml version="1.0" encoding="utf-8"?><!--
+   Sample data extraction rules file; uncomment and customize as necessary.
+   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
+   for details.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- TODO: Use <include> and <exclude> to control what is backed up.
+        <include .../>
+        <exclude .../>
+        -->
+    </cloud-backup>
+    <!--
+    <device-transfer>
+        <include .../>
+        <exclude .../>
+    </device-transfer>
+    -->
+</data-extraction-rules>
+</passage>
+<passage file_path=/app/src/main/java/com/fcu/app_develop_groovy/Review.java>
+    public void setReviewContent(String reviewContent) {
+        this.reviewContent = reviewContent;
+    }
+
+    public void setReviewImage(int reviewImage) {
+        this.reviewImage = reviewImage;
+    }
+}
+
+</passage>
+<passage file_path=/app/src/main/res/layout/account_management_layout.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".account_management">
+
+    <ListView
+        android:id="@+id/management_lw"
+        android:layout_width="409dp"
+        android:layout_height="501dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_search" />
+
+    <Button
+        android:id="@+id/btn_management_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+</passage>
+<passage file_path=/app/src/main/res/layout/review_item.xml>
+app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/round_style"
+        app:strokeColor="@android:color/black"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tv_review_name"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="user_name"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/review_imge"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_review_content"
+        android:layout_width="250dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="content"
+        android:textSize="16sp"
+</passage>
+<passage file_path=/app/src/main/res/layout/account_management_layout.xml>
+app:layout_constraintTop_toBottomOf="@+id/edit_account" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="學號"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+</passage>
+<passage file_path=/app/src/androidTest/java/com/fcu/app_develop_groovy/ExampleInstrumentedTest.java>
+package com.fcu.app_develop_groovy;
+
+import android.content.Context;
+
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.*;
+
+/**
+ * Instrumented test, which will execute on an Android device.
+ *
+ * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ */
+@RunWith(AndroidJUnit4.class)
+public class ExampleInstrumentedTest {
+    @Test
+    public void useAppContext() {
+        // Context of the app under test.
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        assertEquals("com.fcu.app_develop_groovy", appContext.getPackageName());
+    }
+}
+</passage>
+<passage file_path=/app/src/test/java/com/fcu/app_develop_groovy/ExampleUnitTest.java>
+package com.fcu.app_develop_groovy;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+/**
+ * Example local unit test, which will execute on the development machine (host).
+ *
+ * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ */
+public class ExampleUnitTest {
+    @Test
+    public void addition_isCorrect() {
+        assertEquals(4, 2 + 2);
+    }
+}
+</passage>
+<passage file_path=/app/src/main/res/layout/review_item.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00FFFFFF">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/review_imge"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="#00F5F5F5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/round_style"
+</passage>
+<passage file_path=/app/src/main/res/xml/backup_rules.xml>
+<?xml version="1.0" encoding="utf-8"?><!--
+   Sample backup rules file; uncomment and customize as necessary.
+   See https://developer.android.com/guide/topics/data/autobackup
+   for details.
+   Note: This file is ignored for devices older that API 31
+   See https://developer.android.com/about/versions/12/backup-restore
+-->
+<full-backup-content>
+    <!--
+   <include domain="sharedpref" path="."/>
+   <exclude domain="sharedpref" path="device.xml"/>
+-->
+</full-backup-content>
+</passage>
+<passage file_path=/app/src/main/res/layout/account_management_layout.xml>
+app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_account"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <Button
+        android:id="@+id/btn_search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="查詢"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_account" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+</passage>
+<passage file_path=/app/src/main/res/mipmap-anydpi/ic_launcher.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>
+</passage>
+<passage file_path=/app/src/main/res/mipmap-anydpi/ic_launcher_round.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>
+</passage>
+<passage file_path=/app/src/main/res/layout/review_item.xml>
+android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="content"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/review_imge"
+        app:layout_constraintTop_toBottomOf="@+id/tv_review_name"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/score"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/bottom_bar" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+</passage>
+<passage file_path=/app/src/main/res/values/colors.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_color">#F5F5F5</color>
+    <color name="title_color">#333333</color>
+    <color name="icon_color">#757575</color>
+    <color name="text_color">#000000</color>
+    <color name="hint_color">#888888</color>
+    <color name="list_background_color">#FFFFFF</color>
+    <color name="button_color">#2196F3</color>
+    <color name="nav_background">#FFFFFF</color>
+</resources>
+</passage>
+<passage file_path=/app/src/main/res/drawable/ic_launcher_background.xml>
+<path
+        android:fillColor="#00000000"
+        android:pathData="M0,89L108,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,99L108,99"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,29L89,29"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,39L89,39"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,49L89,49"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M19,59L89,59"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+</passage>
+<passage file_path=/app/src/main/res/drawable/ic_launcher_background.xml>
+<path
+        android:fillColor="#00000000"
+        android:pathData="M39,0L39,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M49,0L49,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M59,0L59,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M69,0L69,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M79,0L79,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M89,0L89,108"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+</passage>
+<passage file_path=/app/src/main/res/drawable/ic_launcher_background.xml>
+<path
+        android:fillColor="#00000000"
+        android:pathData="M0,39L108,39"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,49L108,49"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,59L108,59"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,69L108,69"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,79L108,79"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,89L108,89"
+        android:strokeWidth="0.8"
+        android:strokeColor="#33FFFFFF" />
+</passage>
+<passage file_path=/app/src/main/res/layout/image_slider_item.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/banner_image"
+        android:layout_width="350dp"
+        android:layout_height="200dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</passage>
+<passage file_path=/app/src/main/res/drawable/circle_background.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <solid android:color="#CCCCCC"/> <!-- 背景顏色 -->
+    <stroke
+        android:width="1dp"
+        android:color="#000000"/> <!-- 邊框顏色 -->
+</shape>
+</passage>
+<passage file_path=/app/src/main/res/values/themes.xml>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.App_develop_groovy" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.App_develop_groovy" parent="Base.Theme.App_develop_groovy" />
+</resources>
+</passage>
+<passage file_path=/app/src/main/res/values/styles.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="round_corner_style">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">5dp</item>
+    </style>
+    <style name="round_style">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>
+</passage>
+<passage file_path=/app/src/main/res/values-night/themes.xml>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.App_develop_groovy" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    </style>
+</resources>
+</passage>
+<passage file_path=/app/src/main/res/drawable/ic_launcher_foreground.xml>
+android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="nonZero"
+        android:pathData="M65.3,45.828l3.8,-6.6c0.2,-0.4 0.1,-0.9 -0.3,-1.1c-0.4,-0.2 -0.9,-0.1 -1.1,0.3l-3.9,6.7c-6.3,-2.8 -13.4,-2.8 -19.7,0l-3.9,-6.7c-0.2,-0.4 -0.7,-0.5 -1.1,-0.3C38.8,38.328 38.7,38.828 38.9,39.228l3.8,6.6C36.2,49.428 31.7,56.028 31,63.928h46C76.3,56.028 71.8,49.428 65.3,45.828zM43.4,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2c-0.3,-0.7 -0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C45.3,56.528 44.5,57.328 43.4,57.328L43.4,57.328zM64.6,57.328c-0.8,0 -1.5,-0.5 -1.8,-1.2s-0.1,-1.5 0.4,-2.1c0.5,-0.5 1.4,-0.7 2.1,-0.4c0.7,0.3 1.2,1 1.2,1.8C66.5,56.528 65.6,57.328 64.6,57.328L64.6,57.328z"
+        android:strokeWidth="1"
+        android:strokeColor="#00000000" />
+</vector>
+</passage>
+<passage file_path=/app/src/main/res/layout/dialog_review.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/etReviewContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="您的評論"
+        android:inputType="textMultiLine"
+        android:minLines="3"
+        android:padding="8dp"
+        android:gravity="top"/>
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1.0"
+        android:rating="0" />
+
+</LinearLayout>
+</passage>
+<passage file_path=/app/src/main/res/drawable/ic_launcher_foreground.xml>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:pathData="M31,63.928c0,0 6.4,-11 12.1,-13.1c7.2,-2.6 26,-1.4 26,-1.4l38.1,38.1L107,108.928l-32,-1L31,63.928z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:endX="85.84757"
+                android:endY="92.4963"
+                android:startX="42.9492"
+                android:startY="49.59793"
+                android:type="linear">
+                <item
+                    android:color="#44000000"
+                    android:offset="0.0" />
+                <item
+                    android:color="#00000000"
+                    android:offset="1.0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="nonZero"
+</passage>
+<passage file_path=/app/google-services.json>
+{
+  "project_info": {
+    "project_number": "288197271046",
+    "project_id": "app-develop-final",
+    "storage_bucket": "app-develop-final.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:288197271046:android:df272f16e9926261d22d87",
+        "android_client_info": {
+          "package_name": "com.fcu.app_develop_groovy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4E_-meGiHrBYitVG838Ipc9yOWNkmQbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
+</passage>
+<passage file_path=/app/src/main/res/drawable/search_edit_text_background.xml>
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <shape xmlns:android="http://schemas.android.com/apk/res/android">
+        <solid android:color="@color/list_background_color" />
+        <corners android:radius="8dp" />
+        <stroke
+            android:width="1dp"
+            android:color="@android:color/darker_gray" />
+    </shape>
+
+</selector>
+</passage>

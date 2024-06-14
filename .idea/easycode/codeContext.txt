@@ -1,0 +1,183 @@
+<relevant_code>
+
+
+
+<file file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_detail_Activity.java>
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Book_detail_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private DrawerLayout drawerLayout;
+    private ImageView bookImage;
+    private TextView bookTitle;
+    private TextView bookAuthor;
+    private ImageView ratingStars;
+    private ListView reviewList;
+    private Button btnOpenMenu;
+    private Button btnSubmitReview;
+    private List<Review> bookReviews;
+    private ReviewListAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_book_detail);
+
+        bookImage = findViewById(R.id.review_imge);
+        bookTitle = findViewById(R.id.book_title);
+        ratingStars = findViewById(R.id.rating_stars);
+        reviewList = findViewById(R.id.review_list);
+        bookAuthor = findViewById(R.id.tv_author);
+        btnOpenMenu = findViewById(R.id.btn_borrow);
+        btnSubmitReview = findViewById(R.id.btn_review_submit);
+
+        // 側拉選單初始化
+        drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setItemIconTintList(null);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        btnOpenMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+
+        // 接收書籍資料
+        Intent intent = getIntent();
+        if (intent != null) {
+            int imageResId = intent.getIntExtra("bookImage", -1);
+            String title = intent.getStringExtra("bookTitle");
+            int ratingResId = intent.getIntExtra("ratingStars", -1);
+            String authorName = intent.getStringExtra("Author");
+            bookReviews = (List<Review>) getIntent().getSerializableExtra("bookReviews");
+
+            if (imageResId != -1) {
+                bookImage.setImageResource(imageResId);
+            }
+            if (title != null) {
+                bookTitle.setText(title);
+            }
+            if (ratingResId != -1) {
+                switch (ratingResId) {
+                    case 1:
+                        ratingStars.setImageResource(R.drawable.star1);
+                        break;
+                    case 2:
+                        ratingStars.setImageResource(R.drawable.star2);
+                        break;
+                    case 3:
+                        ratingStars.setImageResource(R.drawable.star3);
+                        break;
+                    case 4:
+                        ratingStars.setImageResource(R.drawable.star4);
+                        break;
+                    c
+</file>
+
+
+
+<file file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_listAdapter.java>
+
+                break;
+            case 4:
+                score.setImageResource(R.drawable.star4);
+                break;
+            case 5:
+                score.setImageResource(R.drawable.star5);
+                break;
+        }
+
+
+        return view;
+    }
+}
+
+</file>
+
+
+
+<file file_path=/app/src/main/java/com/fcu/app_develop_groovy/Book_data.java>
+package com.fcu.app_develop_groovy;
+
+
+import static android.content.Context.MODE_APPEND;
+import static android.content.Context.MODE_PRIVATE;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.util.List;
+
+
+public class Book_data {
+    SQLiteDatabase database;
+    static Book_data instance;
+    private static synchronized Book_data getInstance()
+    {
+        if(instance == null)
+            instance = new Book_data();
+        return instance;
+    }
+
+    public static void setInstance(Book_data instance) {
+        Book_data.instance = instance;
+    }
+
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS book(_id INTEGER PRIMARY KEY,bookname TEXT,author TEXT,isbn INTEGER,publishing TEXT,money INTEGER,category TEXT)";
+
+
+    public void setDatabase(SQLiteDatabase database) {
+        this.database = database;
+    }
+
+//"CREATE TABLE IF NOT EXISTS book(_id INTEGER PRIMARY KEY,bookname TEXT,author TEXT,isbn INTEGER,publishing TEXT,money INTEGER,category TEXT)"
+    public void addDatabase(String bookname,String authorname,String isbn,String pulishingname,int money,String category_str){
+        String add = "INSERT INTO "+ "book" +" (bookname,author,isbn,publishing,money,category) VALUES ('" + bookname + "','" + authorname + "'," + isbn + ",'" +
+                pulishingname + "'," + money + ",'" + category_str + "')";
+        database.execSQL(add);
+    }
+    public Cursor searchDatabase(String bookname, String authorname, String isbn, String pulishingname, int money, String category_str)
+    {
+        String search = "";
+
+        if (bookname.equals("") != true)
+            search += "bookname="+bookname;
+        if(authorname.equals("") != true)
+            search += search.length() == 0 ? "author="+authorname : ",author="+authorname;
+        if(isbn.equals("") != true)
+            search += search.length() == 0 ? "isbn="+isbn : ",isbn="+isbn;
+        if(pulishingname.equals("") != true)
+            search += search.length() == 0 ? "publishing="+pulishingname : ",publishing="+pulishingname;
+        if(money != 0)
+            search += search.length() == 0 ? "money="+money : ",money="+money;
+        if(category_str.equals("") != true)
+            search += search.length() == 0 ? "category="+category_str : ",category="+category_str;
+        Cursor cursor = database.query("table",null,search,null,null,null,null,null);//要寫資料庫的search最後的return
+        return cursor;
+    }
+}
+
+</file>
+
+
+
+</relevant_code>

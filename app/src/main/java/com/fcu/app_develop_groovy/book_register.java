@@ -14,7 +14,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.Firebase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 
 public class book_register extends AppCompatActivity {
     EditText book_name,author,isbn,publishing,money,category,image;
@@ -62,7 +68,7 @@ public class book_register extends AppCompatActivity {
                         category_str = category.getText().toString(),
                         isbncode = isbn.getText().toString();
                 int bookmoney = Integer.valueOf(money.getText().toString());
-                data.addDatabase(bookname,authorname,isbncode,pulishingname,bookmoney,category_str);
+                addBook(bookname,authorname);
                 Toast.makeText(book_register.this, "書籍登入成功1", Toast.LENGTH_SHORT).show();
             }
         };
@@ -77,5 +83,14 @@ public class book_register extends AppCompatActivity {
         };
         login.setOnClickListener(button_booklogin);
         back.setOnClickListener(backtofirst);
+    }
+    private void addBook(String bookname,String author){
+        List<Review> reviews1 = new ArrayList<>();
+        reviews1.add(new Review("Steven","Great book!",R.drawable.person1,3));
+        Book book = new Book(R.drawable.book1,bookname,0,0,author,reviews1);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("books");
+        ref.push().setValue(book);
+        Toast.makeText(this,"Book add",Toast.LENGTH_SHORT).show();
     }
 }

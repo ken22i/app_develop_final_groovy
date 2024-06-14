@@ -14,7 +14,9 @@ public class Review implements Serializable {
         this.reviewImage = reviewImage;
         this.review_score = review_score;
     }
+    public Review(){
 
+    }
     public void setReview_score(int review_score) {
         this.review_score = review_score;
     }

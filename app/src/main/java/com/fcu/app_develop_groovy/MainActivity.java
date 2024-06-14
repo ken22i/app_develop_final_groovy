@@ -18,8 +18,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -32,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Handler handler = new Handler();
     private Runnable runnable;
     private ListView lvBooks;
-     
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         btnOpenMenu = findViewById(R.id.btn_open_menu);
         viewPager = findViewById(R.id.vp_news);
         lvBooks = findViewById(R.id.lvBooks);
+        storeSigninInfo("ken22i22i22i");
         NavigationView navigationView = findViewById(R.id.nav_view);
         //側拉選單
         navigationView.setNavigationItemSelectedListener(this);
@@ -74,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         urlList.add("https://www.fcu.edu.tw/event/?id=62B13E82E6CF416EB1F521A2CE35468D");
         urlList.add("https://www.fcu.edu.tw/event/?id=9BA4849F61064028BEE0B84192764AD2");
 
-        ImageSliderAdapter adapter = new ImageSliderAdapter(this,imageList,urlList);
+        ImageSliderAdapter adapter = new ImageSliderAdapter(this, imageList, urlList);
         viewPager.setAdapter(adapter);
         // 設置自動輪播
         runnable = new Runnable() {
@@ -92,31 +99,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //創建review列表
         List<Review> reviews1 = new ArrayList<>();
-        reviews1.add(new Review("Steven","Great book!",R.drawable.person1,3));
-        reviews1.add(new Review("jom","Very informative.",R.drawable.person2,4));
+        reviews1.add(new Review("Steven", "Great book!", R.drawable.person1, 3));
+        reviews1.add(new Review("jom", "Very informative.", R.drawable.person2, 4));
         List<Review> reviews2 = new ArrayList<>();
-        reviews2.add(new Review("Ken","Excellent resource",R.drawable.person3,5));
-        reviews2.add(new Review("toby","Highly recommended.",R.drawable.person2,1));
+        reviews2.add(new Review("Ken", "Excellent resource", R.drawable.person3, 5));
+        reviews2.add(new Review("toby", "Highly recommended.", R.drawable.person2, 1));
         List<Review> reviews3 = new ArrayList<>();
-        reviews3.add(new Review("jully","A must-read for developers.",R.drawable.person5,2));
-        reviews3.add(new Review("JJ","Interesting insights.",R.drawable.person4,4));
+        reviews3.add(new Review("jully", "A must-read for developers.", R.drawable.person5, 2));
+        reviews3.add(new Review("JJ", "Interesting insights.", R.drawable.person4, 4));
         List<Review> reviews4 = new ArrayList<>();
-        reviews4.add(new Review("OWO","A must-read for developers.",R.drawable.person1,2));
-        reviews4.add(new Review("JJ","Interesting insights.",R.drawable.person4,5));
+        reviews4.add(new Review("OWO", "A must-read for developers.", R.drawable.person1, 2));
+        reviews4.add(new Review("JJ", "Interesting insights.", R.drawable.person4, 5));
         List<Review> reviews5 = new ArrayList<>();
-        reviews5.add(new Review("qq","Excellent resource",R.drawable.person1,5));
-        reviews5.add(new Review("jonny","Highly recommended.",R.drawable.person2,1));
+        reviews5.add(new Review("qq", "Excellent resource", R.drawable.person1, 5));
+        reviews5.add(new Review("jonny", "Highly recommended.", R.drawable.person2, 1));
 
         //書籍列表
-        Book book1 = new Book(R.drawable.book1,"WordPress網站架設實務",452,1,"何敏煌",reviews1);
+        Book book1 = new Book(R.drawable.book1, "WordPress網站架設實務", 452, 1, "何敏煌", reviews1);
         book1.calculateScore();
-        Book book2 = new Book(R.drawable.book2,"R資料科學 (第2版)",387,1,"Hadley Wickham",reviews2);
+        Book book2 = new Book(R.drawable.book2, "R資料科學 (第2版)", 387, 1, "Hadley Wickham", reviews2);
         book2.calculateScore();
-        Book book3 = new Book(R.drawable.book3,"用ChatGPT詠唱來點亮React&前端技能樹",3879,1,"一宵三筵 (黃韻儒)",reviews3);
+        Book book3 = new Book(R.drawable.book3, "用ChatGPT詠唱來點亮React&前端技能樹", 3879, 1, "一宵三筵 (黃韻儒)", reviews3);
         book3.calculateScore();
-        Book book4 = new Book(R.drawable.book4,"人工智能的第一性原理: 熵與訊息引擎",39,1,"周輝龍",reviews4);
+        Book book4 = new Book(R.drawable.book4, "人工智能的第一性原理: 熵與訊息引擎", 39, 1, "周輝龍", reviews4);
         book4.calculateScore();
-        Book book5 = new Book(R.drawable.book5,"新一代Keras 3.x重磅回歸: 跨TensorFlow與PyTorch建構Transformer、CNN、RNN、LSTM深度學習模型",87,1,"陳會安",reviews5);
+        Book book5 = new Book(R.drawable.book5, "新一代Keras 3.x重磅回歸: 跨TensorFlow與PyTorch建構Transformer、CNN、RNN、LSTM深度學習模型", 87, 1, "陳會安", reviews5);
         book5.calculateScore();
         List<Book> books = new ArrayList<>();
         books.add(book1);
@@ -124,8 +131,82 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         books.add(book3);
         books.add(book4);
         books.add(book5);
+        /*
         Book_listAdapter lvadapter = new Book_listAdapter(this,books);
         lvBooks.setAdapter(lvadapter);
+        */
+        loadBooksFromFirebase();
+
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable); // 清除Handler回調，避免內存泄漏
+    }
+
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.nav_home) {
+            Toast.makeText(MainActivity.this, "首頁選項被選中", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.nav_books) {
+            Toast.makeText(MainActivity.this, "書籍選項被選中", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.nav_settings) {
+            Toast.makeText(MainActivity.this, "設置選項被選中", Toast.LENGTH_SHORT).show();
+        } else if (itemId == R.id.nav_book_register) {
+            Intent intent = new Intent(MainActivity.this, book_register.class);
+            intent.setClass(MainActivity.this, book_register.class);
+            MainActivity.this.startActivity(intent);
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void storeSigninInfo(String message) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("Signin-Log");
+        ref.setValue(new Date().getTime() + ":" + message);
+    }
+
+    private void loadBooksFromFirebase() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("books");
+        List<Book> books = new ArrayList<>();
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Book book = snapshot.getValue(Book.class);
+                    if (book != null) {
+                        book.calculateScore(); // 計算書籍的評分
+                        books.add(book);
+                    }
+                }
+                Book_listAdapter lvadapter = new Book_listAdapter(MainActivity.this, books);
+                lvBooks.setAdapter(lvadapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "讀取數據失敗：" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
         //書籍列表被點擊
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
             @Override
@@ -147,43 +228,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lvBooks.setOnItemClickListener(itemClickListener);
 
 
-
     }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        handler.removeCallbacks(runnable); // 清除Handler回調，避免內存泄漏
-    }
-
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int itemId = item.getItemId();
-        if (itemId == R.id.nav_home){
-            Toast.makeText(MainActivity.this, "首頁選項被選中", Toast.LENGTH_SHORT).show();
-        } else if (itemId == R.id.nav_books) {
-            Toast.makeText(MainActivity.this, "書籍選項被選中", Toast.LENGTH_SHORT).show();
-        } else if (itemId == R.id.nav_settings) {
-            Toast.makeText(MainActivity.this, "設置選項被選中", Toast.LENGTH_SHORT).show();
-        } else if(itemId == R.id.nav_book_register){
-            Intent intent = new Intent(MainActivity.this, book_register.class);
-            intent.setClass(MainActivity.this,book_register.class);
-            MainActivity.this.startActivity(intent);
-        }
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-
-
 }
 

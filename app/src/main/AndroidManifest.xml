@@ -13,6 +13,9 @@
         android:theme="@style/Theme.App_develop_groovy"
         tools:targetApi="31">
         <activity
+            android:name=".EbookReaderActivity"
+            android:exported="false" />
+        <activity
             android:name=".book_search"
             android:exported="false" />
         <activity
