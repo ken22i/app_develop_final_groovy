@@ -29,7 +29,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Book_detail_Activity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -55,7 +54,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_detail);
 
-        bookImage = findViewById(R.id.review_imge);
+        bookImage = findViewById(R.id.del_book_image);
         bookTitle = findViewById(R.id.book_title);
         ratingStars = findViewById(R.id.rating_stars);
         reviewList = findViewById(R.id.review_list);

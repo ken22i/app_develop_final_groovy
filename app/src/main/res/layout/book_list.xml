@@ -8,7 +8,7 @@
     android:background="#00FFFFFF">
 
     <ImageView
-        android:id="@+id/review_imge"
+        android:id="@+id/del_book_image"
         android:layout_width="130dp"
         android:layout_height="130dp"
         android:layout_marginStart="16dp"
@@ -20,18 +20,18 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/tv_review_name"
+        android:id="@+id/tv_del_name"
         android:layout_width="200dp"
         android:layout_height="60dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:text="書名"
         android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/review_imge"
+        app:layout_constraintStart_toEndOf="@+id/del_book_image"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_review_content"
+        android:id="@+id/tv_del_content"
         android:layout_width="75dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
@@ -40,8 +40,8 @@
         android:text="作者"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/review_imge"
-        app:layout_constraintTop_toBottomOf="@+id/tv_review_name" />
+        app:layout_constraintStart_toEndOf="@+id/del_book_image"
+        app:layout_constraintTop_toBottomOf="@+id/tv_del_name" />
 
     <ImageView
         android:id="@+id/score"
@@ -52,6 +52,6 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_review_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_del_name"
         app:srcCompat="@android:drawable/bottom_bar" />
 </androidx.constraintlayout.widget.ConstraintLayout>

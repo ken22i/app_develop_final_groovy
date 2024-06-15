@@ -37,9 +37,9 @@ public class ReviewListAdapter extends BaseAdapter {
         if(convertView == null){
             convertView = LayoutInflater.from(context).inflate(R.layout.review_item,parent,false);
         }
-        ImageView review_image = convertView.findViewById(R.id.review_imge);
-        TextView review_name = convertView.findViewById(R.id.tv_review_name);
-        TextView review_content = convertView.findViewById(R.id.tv_review_content);
+        ImageView review_image = convertView.findViewById(R.id.del_book_image);
+        TextView review_name = convertView.findViewById(R.id.tv_del_name);
+        TextView review_content = convertView.findViewById(R.id.tv_del_content);
         ImageView review_score_image = convertView.findViewById(R.id.score);
 
         Review review = reviews.get(position);

@@ -48,7 +48,7 @@
             android:layout_gravity="center_vertical" />
 
         <EditText
-            android:id="@+id/etSearch"
+            android:id="@+id/etSearch_del"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

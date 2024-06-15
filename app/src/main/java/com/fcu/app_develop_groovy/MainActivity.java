@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText etSearch = findViewById(R.id.etSearch);
+        EditText etSearch = findViewById(R.id.etSearch_del);
         etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -176,8 +176,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(MainActivity.this, "設置選項被選中", Toast.LENGTH_SHORT).show();
         } else if (itemId == R.id.nav_book_register) {
             Intent intent = new Intent(MainActivity.this, book_register.class);
-            intent.setClass(MainActivity.this, book_register.class);
+            //intent.setClass(MainActivity.this, book_register.class);
             MainActivity.this.startActivity(intent);
+        } else if (itemId == R.id.nav_delete) {
+            Intent intent = new Intent(MainActivity.this, DeleteBooksActivity.class);
+            startActivity(intent);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

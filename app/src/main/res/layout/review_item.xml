@@ -8,7 +8,7 @@
     android:background="#00FFFFFF">
 
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/review_imge"
+        android:id="@+id/del_book_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="16dp"
@@ -23,18 +23,18 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/tv_review_name"
+        android:id="@+id/tv_del_name"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="user_name"
         android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/review_imge"
+        app:layout_constraintStart_toEndOf="@+id/del_book_image"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_review_content"
+        android:id="@+id/tv_del_content"
         android:layout_width="250dp"
         android:layout_height="55dp"
         android:layout_marginStart="8dp"
@@ -43,8 +43,8 @@
         android:text="content"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/review_imge"
-        app:layout_constraintTop_toBottomOf="@+id/tv_review_name"
+        app:layout_constraintStart_toEndOf="@+id/del_book_image"
+        app:layout_constraintTop_toBottomOf="@+id/tv_del_name"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
