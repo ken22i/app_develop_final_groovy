@@ -1,9 +1,11 @@
 package com.fcu.app_develop_groovy;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class Book implements Serializable {
+public class Book implements Parcelable {
     private String imageUrl;
     private String name;
     private int Borrowed;
@@ -19,8 +21,45 @@ public class Book implements Serializable {
         this.author = author;
         this.reviews = reviews;
     }
+
+    // Parcelable 的建構子，用於反序列化
+    protected Book(Parcel in) {
+        imageUrl = in.readString();
+        name = in.readString();
+        Borrowed = in.readInt();
+        score = in.readInt();
+        author = in.readString();
+        reviews = in.createTypedArrayList(Review.CREATOR);
+    }
     public Book(){
 
+    }
+    public static final Creator<Book> CREATOR = new Creator<Book>() {
+        @Override
+        public Book createFromParcel(Parcel in) {
+            return new Book(in);
+        }
+
+        @Override
+        public Book[] newArray(int size) {
+            return new Book[size];
+        }
+    };
+
+    // 寫入序列化數據到 Parcel 對象中
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(imageUrl);
+        dest.writeString(name);
+        dest.writeInt(Borrowed);
+        dest.writeInt(score);
+        dest.writeString(author);
+        dest.writeTypedList(reviews);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public String getImageUrl() {
@@ -55,8 +94,6 @@ public class Book implements Serializable {
         return reviews;
     }
 
-
-
     public String getName() {
         return name;
     }
@@ -72,6 +109,7 @@ public class Book implements Serializable {
     public String getAuthor() {
         return author;
     }
+
     // 新增計算平均分數的方法
     public void calculateScore() {
         if (reviews != null && !reviews.isEmpty()) {
@@ -85,4 +123,3 @@ public class Book implements Serializable {
         }
     }
 }
-

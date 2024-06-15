@@ -3,11 +3,15 @@ package com.fcu.app_develop_groovy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,12 +44,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Runnable runnable;
     private ListView lvBooks;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        EditText etSearch = findViewById(R.id.etSearch);
+        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String searchText = etSearch.getText().toString().trim();
+                    performSearch(searchText); // 執行搜尋
+                    return true;
+                }
+                return false;
+            }
+        });
         drawerLayout = findViewById(R.id.drawer_layout);
         btnOpenMenu = findViewById(R.id.btn_open_menu);
         viewPager = findViewById(R.id.vp_news);
@@ -232,6 +247,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lvBooks.setOnItemClickListener(itemClickListener);
 
 
+    }
+    private void performSearch(String searchText) {
+
+        loadBooksFromFirebaseWithSearch(searchText);
+    }
+    private void loadBooksFromFirebaseWithSearch(String searchText) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("books");
+        List<Book> filteredBooks = new ArrayList<>();
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                filteredBooks.clear(); // 清空上一次的搜尋結果
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Book book = snapshot.getValue(Book.class);
+                    if (book != null) {
+                        // 判斷書名或作者中是否包含使用者輸入的文字
+                        if (book.getName().toLowerCase().contains(searchText.toLowerCase()) ||
+                                book.getAuthor().toLowerCase().contains(searchText.toLowerCase())) {
+                            book.calculateScore(); // 計算書籍的評分
+                            filteredBooks.add(book);
+                        }
+                    }
+                }
+                // 將過濾後的書籍列表顯示在新的視圖中
+                displayFilteredBooks(filteredBooks);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "讀取數據失敗：" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+    private void displayFilteredBooks(List<Book> filteredBooks) {
+        // 將過濾後的書籍列表顯示在新的視圖中，可以是另一個 Activity 或者 Fragment
+        // 這裡展示如何在新的 Activity 中顯示列表
+
+        Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
+        intent.putParcelableArrayListExtra("filteredBooks", new ArrayList<>(filteredBooks)); // 使用 putParcelableArrayListExtra
+        startActivity(intent);
     }
 }
 

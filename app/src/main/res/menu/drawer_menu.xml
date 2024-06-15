@@ -3,6 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_login"
+            android:checked="true"
+            android:icon="@drawable/ic_login"
+            android:title="登入" />
+        <item
             android:id="@+id/nav_home"
             android:checked="true"
             android:icon="@drawable/ic_home"
@@ -12,14 +17,20 @@
             android:checked="true"
             android:icon="@drawable/ic_books"
             android:title="書籍" />
-    <item
-        android:id="@+id/nav_settings"
-        android:checked="true"
-        android:icon="@drawable/ic_settings"
-        android:title="設置" />
+        <item
+            android:id="@+id/nav_settings"
+            android:checked="true"
+            android:icon="@drawable/ic_settings"
+            android:title="設置" />
         <item
             android:id="@+id/nav_book_register"
+            android:icon="@drawable/ic_register"
             android:checked="true"
-            android:title="書籍登入" />
+            android:title="書籍註冊" />
+        <item
+            android:id="@+id/nav_log"
+            android:checked="true"
+            android:icon="@drawable/ic_log"
+            android:title="借書紀錄" />
     </group>
 </menu>

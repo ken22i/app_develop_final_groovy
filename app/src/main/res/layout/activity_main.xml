@@ -57,7 +57,9 @@
             android:background="@android:color/transparent"
             android:textColor="@color/text_color"
             android:textColorHint="@color/hint_color"
-            android:inputType="text" />
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            />
 
         </LinearLayout>
 
