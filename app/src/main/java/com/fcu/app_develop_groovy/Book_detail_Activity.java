@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,8 +47,9 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
     private DatabaseReference databaseReference;
     private String title; // 書籍標題
     private String authorName; // 書籍作者
-    private int imageResId; // 書籍圖片資源ID
+    private String imageUrl; // 書籍圖片URL
     private int ratingResId; // 評價星數資源ID
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,14 +89,18 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
         // 接收書籍資料
         Intent intent = getIntent();
         if (intent != null) {
-            imageResId = intent.getIntExtra("bookImage", -1);
+            imageUrl = intent.getStringExtra("bookImage");
             title = intent.getStringExtra("bookTitle");
             ratingResId = intent.getIntExtra("ratingStars", -1);
             authorName = intent.getStringExtra("Author");
             bookReviews = (List<Review>) getIntent().getSerializableExtra("bookReviews");
 
-            if (imageResId != -1) {
-                bookImage.setImageResource(imageResId);
+            if (imageUrl != null) {
+                // 使用 Glide 加載圖片
+                Glide.with(this)
+                        .load(imageUrl)
+                        .placeholder(R.drawable.placeholder) // 可以設置一個佔位符圖片
+                        .into(bookImage);
             }
             if (title != null) {
                 bookTitle.setText(title);
@@ -182,7 +188,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
                     snapshot.getRef().removeValue();
                 }
                 // 上傳新的書籍記錄
-                Book updatedBook = new Book(imageResId, title, 0, ratingResId, authorName, bookReviews);
+                Book updatedBook = new Book(imageUrl, title, 0, ratingResId, authorName, bookReviews);
                 databaseReference.push().setValue(updatedBook)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {

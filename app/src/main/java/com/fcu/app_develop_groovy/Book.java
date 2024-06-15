@@ -4,15 +4,15 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Book implements Serializable {
-    private int BookImageId;
+    private String imageUrl;
     private String name;
     private int Borrowed;
     private int score;
     private String author;
     private List<Review> reviews;
 
-    public Book(int bookImageId, String name, int borrowed, int score, String author, List<Review> reviews) {
-        BookImageId = bookImageId;
+    public Book(String imageUrl, String name, int borrowed, int score, String author, List<Review> reviews) {
+        this.imageUrl = imageUrl;
         this.name = name;
         Borrowed = borrowed;
         this.score = score;
@@ -23,8 +23,12 @@ public class Book implements Serializable {
 
     }
 
-    public void setBookImageId(int bookImageId) {
-        BookImageId = bookImageId;
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void setName(String name) {
@@ -51,9 +55,7 @@ public class Book implements Serializable {
         return reviews;
     }
 
-    public int getBookImageId() {
-        return BookImageId;
-    }
+
 
     public String getName() {
         return name;

@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class Book_listAdapter extends BaseAdapter {
@@ -44,7 +46,13 @@ public class Book_listAdapter extends BaseAdapter {
         TextView tvAuthor = view.findViewById(R.id.tv_review_content);
         ImageView score = view.findViewById(R.id.score);
         Book book = lsBooks.get(index);
-        imBook.setImageResource(book.getBookImageId());
+
+        // 使用 Glide 加載圖片
+        Glide.with(context)
+                .load(book.getImageUrl())
+                .placeholder(R.drawable.placeholder) // 可以設置一個佔位符圖片
+                .into(imBook);
+
         tvBook_name.setText(book.getName());
         tvAuthor.setText(book.getAuthor());
         switch (book.getScore()){
@@ -64,7 +72,6 @@ public class Book_listAdapter extends BaseAdapter {
                 score.setImageResource(R.drawable.star5);
                 break;
         }
-
 
         return view;
     }

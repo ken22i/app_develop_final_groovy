@@ -116,26 +116,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         reviews5.add(new Review("jonny", "Highly recommended.", R.drawable.person2, 1));
 
         //書籍列表
-        Book book1 = new Book(R.drawable.book1, "WordPress網站架設實務", 452, 1, "何敏煌", reviews1);
-        book1.calculateScore();
-        Book book2 = new Book(R.drawable.book2, "R資料科學 (第2版)", 387, 1, "Hadley Wickham", reviews2);
-        book2.calculateScore();
-        Book book3 = new Book(R.drawable.book3, "用ChatGPT詠唱來點亮React&前端技能樹", 3879, 1, "一宵三筵 (黃韻儒)", reviews3);
-        book3.calculateScore();
-        Book book4 = new Book(R.drawable.book4, "人工智能的第一性原理: 熵與訊息引擎", 39, 1, "周輝龍", reviews4);
-        book4.calculateScore();
-        Book book5 = new Book(R.drawable.book5, "新一代Keras 3.x重磅回歸: 跨TensorFlow與PyTorch建構Transformer、CNN、RNN、LSTM深度學習模型", 87, 1, "陳會安", reviews5);
-        book5.calculateScore();
+        //Book book1 = new Book(R.drawable.book1, "WordPress網站架設實務", 452, 1, "何敏煌", reviews1);
+        //book1.calculateScore();
+        //Book book2 = new Book(R.drawable.book2, "R資料科學 (第2版)", 387, 1, "Hadley Wickham", reviews2);
+       // book2.calculateScore();
+        //Book book3 = new Book(R.drawable.book3, "用ChatGPT詠唱來點亮React&前端技能樹", 3879, 1, "一宵三筵 (黃韻儒)", reviews3);
+        //book3.calculateScore();
+        //Book book4 = new Book(R.drawable.book4, "人工智能的第一性原理: 熵與訊息引擎", 39, 1, "周輝龍", reviews4);
+        //book4.calculateScore();
+        //Book book5 = new Book(R.drawable.book5, "新一代Keras 3.x重磅回歸: 跨TensorFlow與PyTorch建構Transformer、CNN、RNN、LSTM深度學習模型", 87, 1, "陳會安", reviews5);
+        //book5.calculateScore();
         List<Book> books = new ArrayList<>();
-        books.add(book1);
-        books.add(book2);
-        books.add(book3);
-        books.add(book4);
-        books.add(book5);
+        //books.add(book1);
+       // books.add(book2);
+        //books.add(book3);
+        //books.add(book4);
+        //books.add(book5);
         /*
         Book_listAdapter lvadapter = new Book_listAdapter(this,books);
         lvBooks.setAdapter(lvadapter);
         */
+
         loadBooksFromFirebase();
 
 
@@ -219,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Book selectedBook = books.get(position);
 
                 Intent intent = new Intent(MainActivity.this, Book_detail_Activity.class);
-                intent.putExtra("bookImage", selectedBook.getBookImageId());
+                intent.putExtra("bookImage", selectedBook.getImageUrl());
                 intent.putExtra("bookTitle", selectedBook.getName());
                 intent.putExtra("ratingStars", selectedBook.getScore());
                 intent.putExtra("Author", selectedBook.getAuthor());
