@@ -187,7 +187,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
                     snapshot.getRef().removeValue();
                 }
                 // 上傳新的書籍記錄
-                Book updatedBook = new Book(imageUrl, title, 0, ratingResId, authorName, bookReviews);
+                Book updatedBook = new Book(imageUrl, title, "123@gmail.com", ratingResId, authorName, bookReviews);
                 databaseReference.push().setValue(updatedBook)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {

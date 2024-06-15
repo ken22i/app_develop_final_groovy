@@ -138,7 +138,7 @@ public class book_register extends AppCompatActivity {
         List<Review> reviews1 = new ArrayList<>();
         reviews1.add(new Review("Steven", "Great book!", R.drawable.person1, 3));
 
-        Book book = new Book(imageUrl, bookname, 0, 0, author, reviews1);
+        Book book = new Book(imageUrl, bookname, "123@gmail.com", 0, author, reviews1);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("books");
         ref.push().setValue(book);

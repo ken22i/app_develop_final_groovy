@@ -3,21 +3,38 @@ package com.fcu.app_develop_groovy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class account_management extends AppCompatActivity {
     EditText studient_id_input;
     Button back,search;
+    ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
         EdgeToEdge.enable(this);
         setContentView(R.layout.account_management_layout);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -28,6 +45,7 @@ public class account_management extends AppCompatActivity {
         studient_id_input = findViewById(R.id.edit_account);
         back = findViewById(R.id.btn_management_back);
         search = findViewById(R.id.btn_search);
+        listView = findViewById(R.id.management_lw);
         View.OnClickListener backtofirst = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,6 +54,42 @@ public class account_management extends AppCompatActivity {
                 account_management.this.startActivity(change);
             }
         };
+        View.OnClickListener btn_search = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getAllBook();
+            }
+        };
+        search.setOnClickListener(btn_search);
         back.setOnClickListener(backtofirst);
     }
+    private void getAllBook() {
+        List<Book> open = new ArrayList<>();
+        List<String> select = new ArrayList<>();
+        String user = studient_id_input.getText().toString();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("books");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Book book = snapshot.getValue(Book.class);
+                    if (book != null) {
+                        open.add(book);
+                    }
+                }
+                for(int i = 0;i < open.size();i++)
+                    if(open.get(i).getBorrowed().equals(user))
+                        select.add(open.get(i).getName());
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        account_management.this, android.R.layout.simple_list_item_1,select);
+                listView.setAdapter(adapter);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(account_management.this, "讀取數據失敗：" + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });//123@gmail.com
+    }
+
 }

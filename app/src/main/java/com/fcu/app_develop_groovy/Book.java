@@ -8,12 +8,12 @@ import java.util.List;
 public class Book implements Parcelable {
     private String imageUrl;
     private String name;
-    private int Borrowed;
+    private String Borrowed;
     private int score;
     private String author;
     private List<Review> reviews;
 
-    public Book(String imageUrl, String name, int borrowed, int score, String author, List<Review> reviews) {
+    public Book(String imageUrl, String name, String borrowed, int score, String author, List<Review> reviews) {
         this.imageUrl = imageUrl;
         this.name = name;
         Borrowed = borrowed;
@@ -26,7 +26,7 @@ public class Book implements Parcelable {
     protected Book(Parcel in) {
         imageUrl = in.readString();
         name = in.readString();
-        Borrowed = in.readInt();
+        Borrowed = in.readString();
         score = in.readInt();
         author = in.readString();
         reviews = in.createTypedArrayList(Review.CREATOR);
@@ -51,7 +51,7 @@ public class Book implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(imageUrl);
         dest.writeString(name);
-        dest.writeInt(Borrowed);
+        dest.writeString(Borrowed);
         dest.writeInt(score);
         dest.writeString(author);
         dest.writeTypedList(reviews);
@@ -74,7 +74,7 @@ public class Book implements Parcelable {
         this.name = name;
     }
 
-    public void setBorrowed(int borrowed) {
+    public void setBorrowed(String borrowed) {
         Borrowed = borrowed;
     }
 
@@ -98,7 +98,7 @@ public class Book implements Parcelable {
         return name;
     }
 
-    public int getBorrowed() {
+    public String getBorrowed() {
         return Borrowed;
     }
 

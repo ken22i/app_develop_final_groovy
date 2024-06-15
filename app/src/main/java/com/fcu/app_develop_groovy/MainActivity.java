@@ -22,6 +22,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,8 +48,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_main);
-
         EditText etSearch = findViewById(R.id.etSearch_del);
         etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -181,6 +182,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_delete) {
             Intent intent = new Intent(MainActivity.this, DeleteBooksActivity.class);
             startActivity(intent);
+        } else if(itemId == R.id.nav_log){
+            Intent intent = new Intent(MainActivity.this,account_management.class);
+            intent.setClass(MainActivity.this, account_management.class);
+            MainActivity.this.startActivity(intent);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;

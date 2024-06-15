@@ -19,8 +19,8 @@
             android:name=".SearchResultActivity"
             android:exported="false" />
         <activity
-            android:name=".EbookReaderActivity"
-            android:exported="false" />
+            android:name=".account_management"
+            android:exported="true" />
         <activity
             android:name=".book_search"
             android:exported="false" />
