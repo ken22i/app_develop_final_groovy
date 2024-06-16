@@ -1,12 +1,15 @@
 package com.fcu.app_develop_groovy;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -37,6 +40,7 @@ public class book_register extends AppCompatActivity {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS book(_id INTEGER PRIMARY KEY,bookname TEXT,author TEXT,isbn INTEGER,publishing TEXT,money INTEGER,category TEXT)";
     private static final int PICK_IMAGE_REQUEST = 1;
     private Uri imageUri;
+    private TextView fileName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,16 +64,17 @@ public class book_register extends AppCompatActivity {
         publishing = findViewById(R.id.edit_publishing);
         money = findViewById(R.id.edit_money);
         category = findViewById(R.id.edit_category);
-        image = findViewById(R.id.edit_image);
+        //image = findViewById(R.id.edit_image);
         back = findViewById(R.id.btn_back_register);
         login = findViewById(R.id.btn_login);
+        fileName = findViewById(R.id.filename);
         book_name.setText("計算機演算法");
         author.setText("陳錫民");
         isbn.setText("123456789123456");
         publishing.setText("逢甲大學");
         money.setText("1000");
         category.setText("教育");
-        image.setText("12.jpg");
+        //image.setText("12.jpg");
         SQLiteDatabase book_data = openOrCreateDatabase(DATABASE_NAME,MODE_PRIVATE,null);
         book_data.execSQL(CREATE_TABLE);
         data = new Book_data();
@@ -106,6 +111,9 @@ public class book_register extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
+
+            String fileNameStr = getFileName(imageUri);
+            fileName.setText(fileNameStr);
         }
     }
     private void uploadFile(String bookname, String author) {
@@ -144,4 +152,24 @@ public class book_register extends AppCompatActivity {
         ref.push().setValue(book);
         Toast.makeText(this, "Book added", Toast.LENGTH_SHORT).show();
     }
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    result = cursor.getString(nameIndex);
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
 }
