@@ -171,6 +171,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int itemId = item.getItemId();
         if (itemId == R.id.nav_home) {
             Toast.makeText(MainActivity.this, "首頁選項被選中", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this,MainActivity.class);
+            startActivity(intent);
         } else if (itemId == R.id.nav_books) {
             Toast.makeText(MainActivity.this, "書籍選項被選中", Toast.LENGTH_SHORT).show();
         } else if (itemId == R.id.nav_settings) {

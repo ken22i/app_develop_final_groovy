@@ -48,12 +48,13 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
     private String authorName; // 書籍作者
     private String imageUrl; // 書籍圖片URL
     private int ratingResId; // 評價星數資源ID
+    private Button btn_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_detail);
-
+        btn_back = findViewById(R.id.btn_detail_back);
         bookImage = findViewById(R.id.del_book_image);
         bookTitle = findViewById(R.id.book_title);
         ratingStars = findViewById(R.id.rating_stars);
@@ -82,6 +83,13 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
                 } else {
                     drawerLayout.openDrawer(GravityCompat.START);
                 }
+            }
+        });
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Book_detail_Activity.this,MainActivity.class);
+                startActivity(intent);
             }
         });
 

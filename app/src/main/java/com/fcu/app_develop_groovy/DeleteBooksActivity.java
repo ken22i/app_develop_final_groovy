@@ -32,6 +32,7 @@ import java.util.List;
 public class DeleteBooksActivity extends AppCompatActivity {
     private ListView lvBooksToDelete;
     private EditText etSearch;
+    private Button delete_back;
     List<Book> filteredBooks = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class DeleteBooksActivity extends AppCompatActivity {
         });
         lvBooksToDelete = findViewById(R.id.lv_del);
         etSearch = findViewById(R.id.etSearch_del);
+        delete_back = findViewById(R.id.delete_back);
         etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -54,6 +56,13 @@ public class DeleteBooksActivity extends AppCompatActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+        delete_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DeleteBooksActivity.this,MainActivity.class);
+                startActivity(intent);
             }
         });
         AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {

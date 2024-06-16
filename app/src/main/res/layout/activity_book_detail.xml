@@ -79,6 +79,12 @@
                 android:layout_height="wrap_content"
                 android:text="撰寫你的第一條評論" />
 
+            <Button
+                android:id="@+id/btn_detail_back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="首頁" />
+
             <ListView
                 android:id="@+id/review_list"
                 android:layout_width="match_parent"
@@ -86,7 +92,10 @@
                 android:layout_marginTop="8dp"
                 android:divider="@android:color/darker_gray"
                 android:dividerHeight="1dp"
-                android:nestedScrollingEnabled="true" />
+                android:nestedScrollingEnabled="true">
+
+            </ListView>
+
         </LinearLayout>
 
     </ScrollView>

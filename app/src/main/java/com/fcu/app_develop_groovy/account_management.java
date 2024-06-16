@@ -2,6 +2,7 @@ package com.fcu.app_develop_groovy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -13,9 +14,11 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,11 +29,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-public class account_management extends AppCompatActivity {
+public class account_management extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     EditText studient_id_input;
-    Button back,search;
+    Button back,search,mana_open_menu;
     ListView listView;
+    DrawerLayout drawerLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +51,18 @@ public class account_management extends AppCompatActivity {
         back = findViewById(R.id.btn_management_back);
         search = findViewById(R.id.btn_search);
         listView = findViewById(R.id.management_lw);
+        //mana_open_menu = findViewById(R.id.management_open_menu);
+        mana_open_menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
+            }
+        });
+
         View.OnClickListener backtofirst = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,7 +79,9 @@ public class account_management extends AppCompatActivity {
         };
         search.setOnClickListener(btn_search);
         back.setOnClickListener(backtofirst);
+
     }
+
     private void getAllBook() {
         List<Book> open = new ArrayList<>();
         List<String> select = new ArrayList<>();
@@ -92,4 +111,13 @@ public class account_management extends AppCompatActivity {
         });//123@gmail.com
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return false;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
 }
