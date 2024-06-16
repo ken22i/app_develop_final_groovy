@@ -210,6 +210,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 MainActivity.this.startActivity(intent);
 
             }
+        } else if(itemId == R.id.nav_login) {
+            Intent intent = new Intent( MainActivity.this, loginPage.class);
+            intent.setClass( MainActivity.this, loginPage.class);
+            MainActivity.this.startActivity(intent);
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
