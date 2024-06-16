@@ -57,6 +57,7 @@ public class account_management extends AppCompatActivity implements NavigationV
         if(intent != null){
             userMail = intent.getStringExtra("userMail");
         }
+        /*
         mana_open_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +68,8 @@ public class account_management extends AppCompatActivity implements NavigationV
                 }
             }
         });
+
+         */
 
         View.OnClickListener backtofirst = new View.OnClickListener() {
             @Override

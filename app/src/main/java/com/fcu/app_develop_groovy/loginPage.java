@@ -76,9 +76,10 @@ public class loginPage extends AppCompatActivity {
 
     }
 
-    private void goToMainActivity() {
+    private void goToMainActivity(String user_mail) {
         Intent intent = new Intent();
         intent.setClass(loginPage.this, MainActivity.class);
+        intent.putExtra("userMail", user_mail);
         startActivity(intent);
     }
 
@@ -113,7 +114,7 @@ public class loginPage extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         Toast.makeText(loginPage.this, "Authentication succese.",
                                 Toast.LENGTH_SHORT).show();
-                        goToMainActivity();
+                        goToMainActivity(email);
                     }
                     else {
                         Toast.makeText(loginPage.this, "Authentication failed.", Toast.LENGTH_SHORT).show();

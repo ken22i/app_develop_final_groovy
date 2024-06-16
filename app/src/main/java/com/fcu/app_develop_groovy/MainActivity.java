@@ -4,6 +4,7 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -36,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -47,15 +49,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Handler handler = new Handler();
     private Runnable runnable;
     private ListView lvBooks;
-    private String user_mail;
-    private Boolean login_state = FALSE;
-    private Boolean mange_state = FALSE;
+    private String user_mail = "";
+    private String mange_Mail = "123@gmail.com";
+    //private Boolean login_state = FALSE;
+    //private Boolean mange_state = FALSE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_main);
+
+        // 恢復 SharedPreferences 中的狀態
+        restoreState();
         EditText etSearch = findViewById(R.id.etSearch_del);
         etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -74,6 +80,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         lvBooks = findViewById(R.id.lvBooks);
         storeSigninInfo("ken22i22i22i");
         NavigationView navigationView = findViewById(R.id.nav_view);
+        Intent intent = getIntent();
+        if(intent.getStringExtra("userMail")!=null){
+            user_mail = intent.getStringExtra("userMail");
+            Toast.makeText(MainActivity.this, "login as " + user_mail, Toast.LENGTH_SHORT).show();
+            //login_state = TRUE;
+            saveState();
+        }
         //側拉選單
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setItemIconTintList(null);
@@ -168,7 +181,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //user_mail =null;
+        //login_state = FALSE;
+        //mange_state = FALSE;
+        saveState();
         handler.removeCallbacks(runnable); // 清除Handler回調，避免內存泄漏
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // 儲存狀態到 SharedPreferences
+        saveState();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 恢復狀態從 SharedPreferences
+        restoreState();
     }
 
 
@@ -184,26 +214,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_settings) {
             Toast.makeText(MainActivity.this, "設置選項被選中", Toast.LENGTH_SHORT).show();
         } else if (itemId == R.id.nav_book_register) {
-            if(mange_state == FALSE){
+            if(!Objects.equals(user_mail, mange_Mail)){
                 Toast.makeText(MainActivity.this, "You have no permission", Toast.LENGTH_SHORT).show();
-            } else if (mange_state == TRUE) {
+            } else{
                 Intent intent = new Intent(MainActivity.this, book_register.class);
                 //intent.setClass(MainActivity.this, book_register.class);
                 MainActivity.this.startActivity(intent);
             }
         } else if (itemId == R.id.nav_delete) {
-            if(mange_state == FALSE){
+            if(!Objects.equals(user_mail, mange_Mail)){
                 Toast.makeText(MainActivity.this, "You have no permission", Toast.LENGTH_SHORT).show();
-            } else if (mange_state == TRUE) {
+            } else{
                 Intent intent = new Intent(MainActivity.this, DeleteBooksActivity.class);
                 startActivity(intent);
             }
 
         } else if(itemId == R.id.nav_log){
-            if(login_state == FALSE){
+            if(Objects.equals(user_mail, "")){
                 Toast.makeText(MainActivity.this, "您尚未登入", Toast.LENGTH_SHORT).show();
                 //跳轉到登入頁面
-            } else if (login_state ==TRUE) {
+            } else{
+                saveState();
                 Intent intent = new Intent(MainActivity.this,account_management.class);
                 intent.setClass(MainActivity.this, account_management.class);
                 intent.putExtra("userMail", user_mail);
@@ -327,6 +358,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
         intent.putParcelableArrayListExtra("filteredBooks", new ArrayList<>(filteredBooks)); // 使用 putParcelableArrayListExtra
         startActivity(intent);
+    }
+    private void saveState() {
+        SharedPreferences sharedPreferences = getSharedPreferences("AppState", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userMail", user_mail);
+        //editor.putBoolean("loginState", login_state);
+        //editor.putBoolean("mangeState", mange_state);
+        editor.apply();
+    }
+
+    private void restoreState() {
+        SharedPreferences sharedPreferences = getSharedPreferences("AppState", MODE_PRIVATE);
+        user_mail = sharedPreferences.getString("userMail", null);
+        //login_state = sharedPreferences.getBoolean("loginState", FALSE);
+        //mange_state = sharedPreferences.getBoolean("mangeState", FALSE);
     }
 }
 
