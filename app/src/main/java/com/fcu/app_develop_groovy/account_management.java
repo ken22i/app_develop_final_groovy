@@ -36,6 +36,7 @@ public class account_management extends AppCompatActivity implements NavigationV
     Button back,search,mana_open_menu;
     ListView listView;
     DrawerLayout drawerLayout;
+    private String userMail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +53,10 @@ public class account_management extends AppCompatActivity implements NavigationV
         search = findViewById(R.id.btn_search);
         listView = findViewById(R.id.management_lw);
         //mana_open_menu = findViewById(R.id.management_open_menu);
+        Intent intent = getIntent();
+        if(intent != null){
+            userMail = intent.getStringExtra("userMail");
+        }
         mana_open_menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,21 +76,25 @@ public class account_management extends AppCompatActivity implements NavigationV
                 account_management.this.startActivity(change);
             }
         };
+        /*
         View.OnClickListener btn_search = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getAllBook();
             }
         };
-        search.setOnClickListener(btn_search);
+
+         */
+        //search.setOnClickListener(btn_search);
+        getAllBook(userMail);
         back.setOnClickListener(backtofirst);
 
     }
 
-    private void getAllBook() {
+    private void getAllBook(String userMail) {
         List<Book> open = new ArrayList<>();
         List<String> select = new ArrayList<>();
-        String user = studient_id_input.getText().toString();
+        String user = userMail;
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("books");
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {

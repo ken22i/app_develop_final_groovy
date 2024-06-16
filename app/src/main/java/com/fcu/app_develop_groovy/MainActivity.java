@@ -1,5 +1,8 @@
 package com.fcu.app_develop_groovy;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Handler handler = new Handler();
     private Runnable runnable;
     private ListView lvBooks;
+    private String user_mail;
+    private Boolean login_state = FALSE;
+    private Boolean mange_state = FALSE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,16 +184,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (itemId == R.id.nav_settings) {
             Toast.makeText(MainActivity.this, "設置選項被選中", Toast.LENGTH_SHORT).show();
         } else if (itemId == R.id.nav_book_register) {
-            Intent intent = new Intent(MainActivity.this, book_register.class);
-            //intent.setClass(MainActivity.this, book_register.class);
-            MainActivity.this.startActivity(intent);
+            if(mange_state == FALSE){
+                Toast.makeText(MainActivity.this, "You have no permission", Toast.LENGTH_SHORT).show();
+            } else if (mange_state == TRUE) {
+                Intent intent = new Intent(MainActivity.this, book_register.class);
+                //intent.setClass(MainActivity.this, book_register.class);
+                MainActivity.this.startActivity(intent);
+            }
         } else if (itemId == R.id.nav_delete) {
-            Intent intent = new Intent(MainActivity.this, DeleteBooksActivity.class);
-            startActivity(intent);
+            if(mange_state == FALSE){
+                Toast.makeText(MainActivity.this, "You have no permission", Toast.LENGTH_SHORT).show();
+            } else if (mange_state == TRUE) {
+                Intent intent = new Intent(MainActivity.this, DeleteBooksActivity.class);
+                startActivity(intent);
+            }
+
         } else if(itemId == R.id.nav_log){
-            Intent intent = new Intent(MainActivity.this,account_management.class);
-            intent.setClass(MainActivity.this, account_management.class);
-            MainActivity.this.startActivity(intent);
+            if(login_state == FALSE){
+                Toast.makeText(MainActivity.this, "您尚未登入", Toast.LENGTH_SHORT).show();
+                //跳轉到登入頁面
+            } else if (login_state ==TRUE) {
+                Intent intent = new Intent(MainActivity.this,account_management.class);
+                intent.setClass(MainActivity.this, account_management.class);
+                intent.putExtra("userMail", user_mail);
+                MainActivity.this.startActivity(intent);
+
+            }
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
