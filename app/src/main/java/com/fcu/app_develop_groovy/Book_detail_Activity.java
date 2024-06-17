@@ -48,8 +48,8 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
     private String authorName; // 書籍作者
     private String imageUrl; // 書籍圖片URL
     private int ratingResId; // 評價星數資源ID
-    private Button btn_back;
-
+    private Button btn_back,btn_borrow;
+    private String user_mail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +62,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
         bookAuthor = findViewById(R.id.tv_author);
         btnOpenMenu = findViewById(R.id.btn_borrow);
         btnSubmitReview = findViewById(R.id.btn_review_submit);
+
         // 初始化 Firebase Database 引用
         databaseReference = FirebaseDatabase.getInstance().getReference("books");
 
@@ -78,11 +79,15 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
         btnOpenMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                     drawerLayout.closeDrawer(GravityCompat.START);
                 } else {
                     drawerLayout.openDrawer(GravityCompat.START);
                 }
+                
+                 */
+                updateBookInFirebase();
             }
         });
         btn_back.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +106,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
             ratingResId = intent.getIntExtra("ratingStars", -1);
             authorName = intent.getStringExtra("Author");
             bookReviews = (List<Review>) getIntent().getSerializableExtra("bookReviews");
-
+            user_mail = intent.getStringExtra("userMail");
             if (imageUrl != null) {
                 // 使用 Glide 加載圖片
                 Glide.with(this)
@@ -195,7 +200,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
                     snapshot.getRef().removeValue();
                 }
                 // 上傳新的書籍記錄
-                Book updatedBook = new Book(imageUrl, title, "123@gmail.com", ratingResId, authorName, bookReviews);
+                Book updatedBook = new Book(imageUrl, title, user_mail, ratingResId, authorName, bookReviews);
                 databaseReference.push().setValue(updatedBook)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {

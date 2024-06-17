@@ -307,6 +307,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent.putExtra("ratingStars", selectedBook.getScore());
                 intent.putExtra("Author", selectedBook.getAuthor());
                 intent.putExtra("bookReviews", new ArrayList<>(selectedBook.getReviews()));
+                intent.putExtra("userMail", user_mail);
 
                 startActivity(intent);
             }
