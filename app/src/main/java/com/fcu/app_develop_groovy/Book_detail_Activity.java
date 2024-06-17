@@ -39,7 +39,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
     private TextView bookAuthor;
     private ImageView ratingStars;
     private ListView reviewList;
-    private Button btnOpenMenu;
+    private Button btn_borrow;
     private Button btnSubmitReview;
     private List<Review> bookReviews;
     private ReviewListAdapter adapter;
@@ -48,7 +48,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
     private String authorName; // 書籍作者
     private String imageUrl; // 書籍圖片URL
     private int ratingResId; // 評價星數資源ID
-    private Button btn_back,btn_borrow;
+    private Button btn_back;
     private String user_mail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
         ratingStars = findViewById(R.id.rating_stars);
         reviewList = findViewById(R.id.review_list);
         bookAuthor = findViewById(R.id.tv_author);
-        btnOpenMenu = findViewById(R.id.btn_borrow);
+        btn_borrow = findViewById(R.id.btn_borrow);
         btnSubmitReview = findViewById(R.id.btn_review_submit);
 
         // 初始化 Firebase Database 引用
@@ -76,20 +76,7 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
                 this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        btnOpenMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-                
-                 */
-                updateBookInFirebase();
-            }
-        });
+
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,6 +138,22 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
                 showReviewDialog();
             }
         });
+        btn_borrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
+
+                 */
+
+                checkBorrowStatusAndUpdate();
+
+            }
+        });
     }
 
     private void showReviewDialog() {
@@ -191,6 +194,38 @@ public class Book_detail_Activity extends AppCompatActivity implements Navigatio
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+    private void checkBorrowStatusAndUpdate() {
+        databaseReference.orderByChild("name").equalTo(title).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean isBorrowed = false;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Book book = snapshot.getValue(Book.class);
+                    if (book != null && book.getBorrowed() != null) {
+                        if (book.getBorrowed().equals(user_mail)) {
+                            Toast.makeText(Book_detail_Activity.this, "You have already borrowed this book", Toast.LENGTH_SHORT).show();
+                            isBorrowed = true;
+                            break;
+                        } else {
+                            Toast.makeText(Book_detail_Activity.this, "This book is already borrowed", Toast.LENGTH_SHORT).show();
+                            isBorrowed = true;
+                            break;
+                        }
+                    }
+                }
+                if (!isBorrowed) {
+                    updateBookInFirebase();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(Book_detail_Activity.this, "Operation failed: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     private void updateBookInFirebase() {
         // 刪除舊書籍記錄
         databaseReference.orderByChild("name").equalTo(title).addListenerForSingleValueEvent(new ValueEventListener() {
